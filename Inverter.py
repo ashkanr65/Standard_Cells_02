@@ -1,7 +1,7 @@
 # $autorun
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 16 10:01:16 2022
+Created on Tuesday Juy 19 10:01:16 2022
 
 @author: Ashkan
 """
@@ -635,6 +635,7 @@ class Inverter(pya.PCellDeclarationHelper):
     path_width = ov + via
     path_width_dbu = path_width/dbu
     finger_width = self.fw
+    finger_width_dbu = finger_width / dbu
     finger_sep = self.s
     finger_sep_dbu = finger_sep / dbu
     path_step = path_width_dbu + finger_sep_dbu
@@ -699,18 +700,25 @@ class Inverter(pya.PCellDeclarationHelper):
 
     # I0 Input
     Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-        pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
+        pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 4*path_step),
         ],path_width_dbu)
-    self.cell.shapes(txt).insert(Input)
+    self.cell.shapes(gc).insert(Input)
 
     # Out Input
     Out = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-        pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_connection + 3*path_step),
+        pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_connection + 4*path_step),
         ],path_width_dbu)
-    self.cell.shapes(txt).insert(Out)
+    self.cell.shapes(gc).insert(Out)
 
     # Pads
     if(self.pad):
+        Top_Edge = (y + w_d/2 + self.fw/2 + self.o + 2*finger_sep + 2*finger_width + self.PDN_S)/dbu  #Top edge of Cell
+        Bottom_Edge = (y-(w_d/2 + self.fw/2 + self.o + 2*finger_sep + 2*finger_width + self.PDN_S))/dbu #Bottom edge of Cell
+        VDD_B_E = Top_Edge  #VDD bottom edge
+        VDD_T_E = VDD_B_E + (self.rail * finger_width) #VDD top edge
+        VSS_B_E = Bottom_Edge #Vss top edge
+        VSS_T_E = VSS_B_E + (self.rail * finger_width) ##Vss bottom edge
+        
         list_a = [-400, 0, 400]
         list_b = [-200, 200]
         for i in list_a:
@@ -719,41 +727,43 @@ class Inverter(pya.PCellDeclarationHelper):
         
         # Vdd connection
         vdd = pya.Path([
-            pya.Point(-475/dbu, 200/dbu),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-        ],path_width_dbu)
+            pya.Point(-480/dbu, 200/dbu),
+            pya.Point(-480/dbu, Top_Edge),
+            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge),
+        ],self.rail*self.fw/dbu)
         self.cell.shapes(sd).insert(vdd)
 
-        # Vdd connection
-        Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-        ],path_width_dbu)
-        self.cell.shapes(txt).insert(Input)
+        # Vss connection
+        vss = pya.Path([
+            pya.Point(480/dbu, -200/dbu),
+            pya.Point(480/dbu, Bottom_Edge),
+            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+        ],self.rail*self.fw/dbu)
+        self.cell.shapes(sd).insert(vss)
 
-        # Vdd connection
-        Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-        ],path_width_dbu)
-        self.cell.shapes(txt).insert(Input)
+        # Vbg connection
+        vbg = pya.Path([
+            pya.Point(0, 200/dbu),
+            pya.Point(0, Top_Edge+finger_width_dbu),
+            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge+finger_width_dbu),
+        ],self.fw/dbu)
+        self.cell.shapes(bm).insert(vbg)
 
-        # Vdd connection
-        Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-        ],path_width_dbu)
-        self.cell.shapes(txt).insert(Input)
+        # Vin connection
+        vin = pya.Path([
+            pya.Point(-320/dbu, -200/dbu),
+            pya.Point(-320/dbu, -gate_connection - 4*path_step + path_width/dbu/2),
+            pya.Point((x0-gate_edge + (via + ov))/dbu, -gate_connection - 4*path_step + path_width/dbu/2),
+        ],path_width/dbu)
+        self.cell.shapes(gc).insert(vin)
 
-        # Vdd connection
-        Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-        ],path_width_dbu)
-        self.cell.shapes(txt).insert(Input)
-
-        # Vdd connection
-        Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-        ],path_width_dbu)
-        self.cell.shapes(txt).insert(Input)
+        # Vout connection
+        vout = pya.Path([
+            pya.Point(320/dbu, 200/dbu),
+            pya.Point(320/dbu, gate_connection + 4*path_step - path_width/dbu/2),
+            pya.Point((x1-gate_edge + (via + ov))/dbu, +gate_connection + 4*path_step - path_width/dbu/2),
+        ],path_width/dbu)
+        self.cell.shapes(gc).insert(vout)
 
   def produce_impl(self):
     
