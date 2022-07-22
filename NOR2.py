@@ -35,7 +35,7 @@ class NOR2_v2(pya.PCellDeclarationHelper):
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "Standard Cell:(ratio=" + str((self.r)) + "Separate Load Gate"+")"
+    return "STD Cell NOR2:(ratio=" + str((self.r)) + ",Width="+ "90*"+str((self.n_d)) + ")"
 
   def can_create_from_shape_impl(self):
     # Implement the "Create PCell from shape" protocol: we can use any shape which 
@@ -651,6 +651,10 @@ class NOR2_v2(pya.PCellDeclarationHelper):
     q = self.l_d / self.l_l
     p = int(self.r / q)
     y = 0
+    Top_Edge = (y + w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S)/dbu  #Top edge of Cell
+    Top_rail = Top_Edge + self.rail*finger_width_dbu/2
+    Bottom_Edge = (y-(w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S))/dbu #Bottom edge of Cell
+    Bottom_rail = Bottom_Edge - self.rail*finger_width_dbu/2
     x0 = -((self.n_d*self.l_d)+(self.n_d+1)*finger_width)/2 
     # x0 = 0
     d_x_0 = ((-2*x0) + finger_sep ) / 5
@@ -667,7 +671,8 @@ class NOR2_v2(pya.PCellDeclarationHelper):
     third_path = y/dbu + path_width_dbu/2 + 3*ov_dbu/2 + via/2/dbu
     gate_connection = (w_d/2 - path_width/2)/dbu #Top gate of Cell
     gate_edge = ((self.n_d)*self.l_d+(self.n_d+1)*finger_width)/2
-    Bus_dbu = 15/dbu
+    gate_out = gate_connection + 4*path_step - path_width_dbu/2 + finger_sep_dbu
+    gate_in = -gate_out
     #transistors implementation
     # self.transistor(level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth)
     # Levels: 
@@ -707,30 +712,24 @@ class NOR2_v2(pya.PCellDeclarationHelper):
 
     # I0 Input
     Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-        pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 4*path_step),
+        pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
     # I1 Input
     Input = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-        pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection - 4*path_step),
+        pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
     # Out Input
     Out = pya.Path([pya.Point((x2-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-        pya.Point((x2-gate_edge + (via + ov)/2)/dbu, gate_connection + 4*path_step),
+        pya.Point((x2-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Out)
 
     # Pads
     if(self.pad):
-        Top_Edge = (y + w_d/2 + self.fw/2 + self.o + 2*finger_sep + 2*finger_width + self.PDN_S)/dbu  #Top edge of Cell
-        Bottom_Edge = (y-(w_d/2 + self.fw/2 + self.o + 2*finger_sep + 2*finger_width + self.PDN_S))/dbu #Bottom edge of Cell
-        VDD_B_E = Top_Edge  #VDD bottom edge
-        VDD_T_E = VDD_B_E + (self.rail * finger_width) #VDD top edge
-        VSS_B_E = Bottom_Edge #Vss top edge
-        VSS_T_E = VSS_B_E + (self.rail * finger_width) ##Vss bottom edge
         
         list_a = [-400, 0, 400]
         list_b = [-200, 200]
@@ -740,51 +739,54 @@ class NOR2_v2(pya.PCellDeclarationHelper):
         
         # Vdd connection
         vdd = pya.Path([
-            pya.Point(-480/dbu, 200/dbu),
-            pya.Point(-480/dbu, Top_Edge),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge),
-        ],self.rail*self.fw/dbu)
+            pya.Point(-320/dbu, 200/dbu),
+            pya.Point(-320/dbu, Top_rail),
+            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_rail),
+        ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vdd)
 
         # Vss connection
         vss = pya.Path([
-            pya.Point(480/dbu, -200/dbu),
-            pya.Point(480/dbu, Bottom_Edge),
-            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
-        ],self.rail*self.fw/dbu)
+            pya.Point(320/dbu, -200/dbu),
+            pya.Point(320/dbu, Bottom_rail),
+            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_rail),
+        ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vss)
 
         # Vbg connection
         vbg = pya.Path([
             pya.Point(0, 200/dbu),
-            pya.Point(0, Top_Edge+finger_width_dbu),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge+finger_width_dbu),
-        ],self.fw/dbu)
+            pya.Point(0, gate_out),
+            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_out),
+            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
+        ],finger_width_dbu)
         self.cell.shapes(bm).insert(vbg)
 
         # Vin1 connection
         vin1 = pya.Path([
             pya.Point(-320/dbu, -200/dbu),
-            pya.Point(-320/dbu, -gate_connection - 4*path_step + path_width/dbu/2),
-            pya.Point((x0-gate_edge + (via + ov))/dbu, -gate_connection - 4*path_step + path_width/dbu/2),
-        ],path_width/dbu)
+            pya.Point(-320/dbu, gate_in),
+            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
+            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+        ],path_width_dbu)
         self.cell.shapes(gc).insert(vin1)
 
         # Vin2 connection
         vin2 = pya.Path([
             pya.Point(0, -200/dbu),
-            pya.Point(0, -gate_connection - 6*path_step + path_width/dbu/2),
-            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection - 6*path_step + path_width/dbu/2),
-            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection - 4*path_step + path_width/dbu/2),
-        ],path_width/dbu)
+            pya.Point(0, -2*path_step + gate_in),
+            pya.Point((x1-gate_edge + (via + ov)/2)/dbu,-2*path_step + gate_in),
+            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+        ],path_width_dbu)
         self.cell.shapes(gc).insert(vin2)
 
         # Vout connection
         vout = pya.Path([
             pya.Point(320/dbu, 200/dbu),
-            pya.Point(320/dbu, gate_connection + 4*path_step - path_width/dbu/2),
-            pya.Point((x2-gate_edge + (via + ov))/dbu, +gate_connection + 4*path_step - path_width/dbu/2),
-        ],path_width/dbu)
+            pya.Point(320/dbu, gate_out),
+            pya.Point((x2-gate_edge + (via + ov)/2)/dbu, gate_out),
+            pya.Point((x2-gate_edge + (via + ov)/2)/dbu, Top_Edge),
+        ],path_width_dbu)
         self.cell.shapes(gc).insert(vout)
 
   def produce_impl(self):
