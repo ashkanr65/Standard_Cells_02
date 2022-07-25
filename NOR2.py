@@ -1,9 +1,8 @@
 # $autorun
 # -*- coding: utf-8 -*-
 """
-Created on Tuesday Juy 19 14:40:25 2022
-
 @author: Ashkan
+Email:ashkan.rezaee@uab.cat
 """
 
 from typing import Sized

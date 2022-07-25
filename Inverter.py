@@ -1,9 +1,8 @@
 # $autorun
 # -*- coding: utf-8 -*-
 """
-Created on Tuesday Juy 19 10:01:16 2022
-
 @author: Ashkan
+Email:ashkan.rezaee@uab.cat
 """
 
 from sys import path
