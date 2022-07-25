@@ -1,9 +1,8 @@
 # $autorun
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 16 10:01:16 2022
-
 @author: Ashkan
+Email:ashkan.rezaee@uab.cat
 """
 
 from typing import Sized
@@ -22,25 +21,210 @@ class MUX_2(pya.PCellDeclarationHelper):
 
     # declare the parameters
     self.param("n_d", self.TypeInt, "Number of Drive Fingers", default = 1)
-    self.param("l_d", self.TypeDouble, "Drive Length", default = 4)
-    self.param("l_l", self.TypeDouble, "Load Length", default = 4)
+    self.param("l_d", self.TypeDouble, "Drive Length", default = 2.5)
+    self.param("l_l", self.TypeDouble, "Load Length", default = 2.5)
     self.param("r", self.TypeDouble, "Ratio", default = 1)
-    self.param("o", self.TypeDouble, "Gate Overlap", default = 5)
-    self.param("fw", self.TypeDouble, "Finger Width", default = 5)
-    self.param("s", self.TypeDouble, "Finger Separation", default = 5)
-    self.param("via", self.TypeDouble, "via size", default = 5)
+    self.param("o", self.TypeDouble, "Gate Overlap", default = 2.5)
+    self.param("fw", self.TypeDouble, "Finger Width", default = 3.5)
+    self.param("s", self.TypeDouble, "Finger Separation", default = 2.5)
+    self.param("via", self.TypeDouble, "via size", default = 2.5)
     self.param("rail", self.TypeDouble, "rail to finger width ratio", default = 3)
     self.param("PDN_S", self.TypeDouble, "Extra distance for PDN", default = 0)
+    self.param("pad", self.TypeBoolean, "Pads", default = False)
+    self.param("sel", self.TypeBoolean, "S input", default = False)
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "Standard Cell:(ratio=" + str((self.r)) + "Separate Load Gate"+")"
+    return "STD Cell MUX2:(ratio=" + str((self.r)) + ",Width="+ "90*"+str((self.n_d)) + ")"
 
   def can_create_from_shape_impl(self):
     # Implement the "Create PCell from shape" protocol: we can use any shape which 
     # has a finite bounding box
     return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
      
+  def create_pad(self, x, y):
+        # This is the main part of the implementation: create the layout
+
+        # fetch the parameters
+        w_dbu = 175 / self.layout.dbu
+        l_dbu = 175 / self.layout.dbu
+        w_via = 0.0857142857142857 * w_dbu
+        l_via = 0.0857142857142857 * l_dbu
+        w_via_cir = 5 / self.layout.dbu
+        l_via_cir = 5 / self.layout.dbu
+
+        # Other design rules and other "fixed" variables
+        posx = x / self.layout.dbu
+        posy = y / self.layout.dbu
+
+        nr = 128  # Number of points in a circle
+        bm = self.layout.layer(1, 0)
+        bl = self.layout.layer(2, 0)
+        sd = self.layout.layer(3, 0)
+        gm = self.layout.layer(4, 0)
+        pv = self.layout.layer(6, 0)
+        gc = self.layout.layer(7, 0)
+        pv2 = self.layout.layer(9, 0)
+
+        # create the shape
+        # back-gate layer
+        full_region = pya.Box(posx - w_dbu / 2, posy - l_dbu / 2, posx + w_dbu / 2, posy + l_dbu / 2)
+        # print region
+        self.cell.shapes(bm).insert(full_region)
+
+        # gate connection layer
+        self.cell.shapes(gc).insert(full_region)
+
+        # inner via
+        square_region = pya.Region(
+            pya.Box(posx - w_dbu * 0.73 / 2, posy - l_dbu * 0.73 / 2, posx + w_dbu * 0.73 / 2, posy + l_dbu * 0.73 / 2))
+        # print region
+        self.cell.shapes(pv).insert(square_region)
+
+        # sqaure sd layer
+        b_region = pya.Region(pya.Box(posx - w_dbu / 2, posy - l_dbu / 2, posx + w_dbu / 2, posy - l_dbu / 2 + (l_via)))
+        r_region = pya.Region(pya.Box((posx + w_dbu / 2) - w_via, posy - l_dbu / 2, posx + w_dbu / 2, posy + l_dbu / 2))
+        t_region = pya.Region(pya.Box(posx - w_dbu / 2, posy + l_dbu / 2 - (l_via), posx + w_dbu / 2, posy + l_dbu / 2))
+        l_region = pya.Region(pya.Box((posx - w_dbu / 2) + w_via, posy - l_dbu / 2, posx - w_dbu / 2, posy + l_dbu / 2))
+        tot_region = b_region + r_region + t_region + l_region
+        tot_region.round_corners(0, 0, nr)
+        # print region
+        self.cell.shapes(sd).insert(tot_region)
+
+        # Round via
+        w_mar = int(((175 + 20) / 2) / 20)
+        l_mar = int(175 / 2 / 20)
+
+        for i in range(w_mar):
+            i = i / self.layout.dbu
+
+            # bottom line
+            # square region
+            # positive loop
+            square_region = pya.Region(pya.Box(posx - 7.5 / self.layout.dbu + 20 * i, posy - l_dbu / 2,\
+                posx + 7.5 / self.layout.dbu + 20 * i, posy - l_dbu / 2 + ((l_via - (\
+                15 / self.layout.dbu)) / 2) + 15 / self.layout.dbu))
+            # print region
+            self.cell.shapes(gc).insert(square_region)
+            # negative loop
+            square_region = pya.Region(pya.Box(posx - 7.5 / self.layout.dbu - 20 * i, posy - l_dbu / 2,\
+                posx + 7.5 / self.layout.dbu - 20 * i, posy - l_dbu / 2 + ((l_via - (\
+                15 / self.layout.dbu)) / 2) + 15 / self.layout.dbu))
+            # print region
+            self.cell.shapes(gc).insert(square_region)
+
+            # circle
+            # positive loop
+            circle_region = pya.Region(pya.Box(posx - 2.5 / self.layout.dbu + 20 * i, posy - l_dbu / 2 + (\
+                (l_via - (15 / self.layout.dbu)) / 2) + 5 / self.layout.dbu,\
+                posx + 2.5 / self.layout.dbu + 20 * i, posy - l_dbu / 2 + ((l_via - (\
+                15 / self.layout.dbu)) / 2) + 10 / self.layout.dbu)).round_corners(0, w_via_cir / 2, nr)
+            # print region
+            self.cell.shapes(pv).insert(circle_region)
+            # negative loop
+            circle_region = pya.Region(pya.Box(posx - 2.5 / self.layout.dbu - 20 * i, posy - l_dbu / 2 + (\
+                (l_via - (15 / self.layout.dbu)) / 2) + 5 / self.layout.dbu,\
+                posx + 2.5 / self.layout.dbu - 20 * i, posy - l_dbu / 2 + ((l_via - (\
+                15 / self.layout.dbu)) / 2) + 10 / self.layout.dbu)).round_corners(0, w_via_cir / 2, nr)
+            # print region
+            self.cell.shapes(pv).insert(circle_region)
+
+            # top line
+            # square region
+            # positive loop
+            square_region = pya.Region(pya.Box(posx - 7.5 / self.layout.dbu + 20 * i, posy + l_dbu / 2,\
+                posx + 7.5 / self.layout.dbu + 20 * i, posy + l_dbu / 2 - ((l_via - (\
+                15 / self.layout.dbu)) / 2) - 15 / self.layout.dbu))
+            # print region
+            self.cell.shapes(gc).insert(square_region)
+            # negative loop
+            square_region = pya.Region(pya.Box(posx - 7.5 / self.layout.dbu - 20 * i,\
+                posy + l_dbu / 2, posx + 7.5 / self.layout.dbu - 20 * i,\
+                posy + l_dbu / 2 - ((l_via - (15 / self.layout.dbu)) / 2) - 15 / self.layout.dbu))
+            # print region
+            self.cell.shapes(gc).insert(square_region)
+
+            # circle region
+            # positive loop
+            circle_region = pya.Region(pya.Box(posx - 2.5 / self.layout.dbu + 20 * i, posy + l_dbu / 2 - (\
+                (l_via - (15 / self.layout.dbu)) / 2) - 5 / self.layout.dbu,\
+                posx + 2.5 / self.layout.dbu + 20 * i, posy + l_dbu / 2 - ((l_via - (\
+                15 / self.layout.dbu)) / 2) - 10 / self.layout.dbu)).round_corners(0, w_via_cir / 2, nr)
+            # print region
+            self.cell.shapes(pv).insert(circle_region)
+            # negative loop
+            circle_region = pya.Region(pya.Box(posx - 2.5 / self.layout.dbu - 20 * i, posy + l_dbu / 2 - (\
+                (l_via - (15 / self.layout.dbu)) / 2) - 5 / self.layout.dbu,\
+                posx + 2.5 / self.layout.dbu - 20 * i, posy + l_dbu / 2 - ((l_via - (\
+                15 / self.layout.dbu)) / 2) - 10 / self.layout.dbu)).round_corners(0, w_via_cir / 2, nr)
+            # print region
+            self.cell.shapes(pv).insert(circle_region)
+
+        for i in range(l_mar):
+            i = i / self.layout.dbu
+
+            # left line
+            # square region
+            # positive loop
+            square_region = pya.Region(pya.Box(posx - w_dbu / 2, posy - 7.5 / self.layout.dbu + 20 * i,\
+                posx - w_dbu / 2 + ((w_via - (15 / self.layout.dbu)) / 2) + 15 / self.layout.dbu,\
+                posy + 7.5 / self.layout.dbu + 20 * i))
+            # print region
+            self.cell.shapes(gc).insert(square_region)
+            # negative loop
+            square_region = pya.Region(pya.Box(posx - w_dbu / 2, posy - 7.5 / self.layout.dbu - 20 * i,\
+                posx - w_dbu / 2 + ((w_via - (15 / self.layout.dbu)) / 2) + 15 / self.layout.dbu,\
+                posy + 7.5 / self.layout.dbu - 20 * i))
+            # print region
+            self.cell.shapes(gc).insert(square_region)
+
+            # circle region
+            # positive loop
+            circle_region = pya.Region(pya.Box(posx - w_dbu / 2 + ((w_via - (15 / self.layout.dbu)) / 2) + \
+                5 / self.layout.dbu, posy - 2.5 / self.layout.dbu + 20 * i,\
+                posx - w_dbu / 2 + ((w_via - (15 / self.layout.dbu)) / 2) + 10 / self.layout.dbu,\
+                posy + 2.5 / self.layout.dbu + 20 * i)).round_corners(0, l_via_cir / 2, nr)
+            # print region
+            self.cell.shapes(pv).insert(circle_region)
+            # negative loop
+            circle_region = pya.Region(pya.Box(posx - w_dbu / 2 + ((w_via - (15 / self.layout.dbu)) / 2) + \
+                5 / self.layout.dbu, posy - 2.5 / self.layout.dbu - 20 * i,\
+                posx - w_dbu / 2 + ((w_via - (15 / self.layout.dbu)) / 2) + 10 / self.layout.dbu,\
+                posy + 2.5 / self.layout.dbu - 20 * i)).round_corners(0, l_via_cir / 2, nr)
+            # print region
+            self.cell.shapes(pv).insert(circle_region)
+
+            # right line
+            # square region
+            # positive loop
+            square_region = pya.Region(pya.Box(posx + w_dbu / 2, posy - 7.5 / self.layout.dbu + 20 * i,\
+                posx + w_dbu / 2 - ((w_via - (15 / self.layout.dbu)) / 2) - 15 / self.layout.dbu,\
+                posy + 7.5 / self.layout.dbu + 20 * i))
+            # print region
+            self.cell.shapes(gc).insert(square_region)
+            # negative loop
+            square_region = pya.Region(pya.Box(posx + w_dbu / 2, posy - 7.5 / self.layout.dbu - 20 * i,\
+                posx + w_dbu / 2 - ((w_via - (15 / self.layout.dbu)) / 2) - 15 / self.layout.dbu,\
+                posy + 7.5 / self.layout.dbu - 20 * i))
+            # print region
+            self.cell.shapes(gc).insert(square_region)
+
+            # circle
+            # positive loop
+            circle_region = pya.Region(pya.Box(posx + w_dbu / 2 - ((w_via - (15 / self.layout.dbu)) / 2) - \
+                5 / self.layout.dbu, posy - 2.5 / self.layout.dbu + 20 * i,\
+                posx + w_dbu / 2 - ((w_via - (15 / self.layout.dbu)) / 2) - 10 / self.layout.dbu,\
+                posy + 2.5 / self.layout.dbu + 20 * i)).round_corners(0, l_via_cir / 2, nr)
+            # print region
+            self.cell.shapes(pv).insert(circle_region)
+            # negative loop
+            circle_region = pya.Region(pya.Box(posx + w_dbu / 2 - ((w_via - (15 / self.layout.dbu)) / 2) - \
+                5 / self.layout.dbu, posy - 2.5 / self.layout.dbu - 20 * i,\
+                posx + w_dbu / 2 - ((w_via - (15 / self.layout.dbu)) / 2) - 10 / self.layout.dbu,\
+                posy + 2.5 / self.layout.dbu - 20 * i)).round_corners(0, l_via_cir / 2, nr)
+            # print region
+            self.cell.shapes(pv).insert(circle_region)
+  
   def transistor(self, level, x, y, w_i, n_i, l_i, bg, load, Int_Con, ov_l, ov_r, out):
     # Other design rules and other "fixed" variables, such as layer identifiers, path widths, via hole sizes, etc.
     nr = 128 # Number of points in a circle
@@ -452,6 +636,7 @@ class MUX_2(pya.PCellDeclarationHelper):
     finger_width = self.fw
     finger_sep = self.s
     finger_sep_dbu = finger_sep / dbu
+    finger_width_dbu = finger_width / dbu
     path_step = path_width_dbu + finger_sep_dbu
     right_ov_load = path_width + finger_sep
     txt = self.layout.layer(0,0)
@@ -466,7 +651,11 @@ class MUX_2(pya.PCellDeclarationHelper):
     q = self.l_d / self.l_l
     p = int(self.r / q)
     y = 0
-    x0 = -((self.n_d*self.l_d)+(self.n_d+1)*finger_width)/2 
+    Top_Edge = (y + w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S)/dbu  #Top edge of Cell
+    Top_rail = Top_Edge + self.rail*finger_width_dbu/2
+    Bottom_Edge = (y-(w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S))/dbu #Bottom edge of Cell
+    Bottom_rail = Bottom_Edge - self.rail*finger_width_dbu/2
+    x0 = -((self.n_d*self.l_d)+(self.n_d+1)*finger_width)/2
     # x0 = 0
     d_x_0 = ((-2*x0) + finger_sep ) / 5
     d_x_1 = ((-2*x0) + 2*finger_sep + path_width) / 5
@@ -482,7 +671,8 @@ class MUX_2(pya.PCellDeclarationHelper):
     third_path = y/dbu + path_width_dbu/2 + 3*ov_dbu/2 + via/2/dbu
     gate_connection = (w_d/2 - path_width/2)/dbu #Top gate of Cell
     gate_edge = ((self.n_d)*self.l_d+(self.n_d+1)*finger_width)/2
-    Bus_dbu = 15/dbu
+    gate_out = gate_connection + 4*path_step - path_width_dbu/2 + finger_sep_dbu
+    gate_in = -gate_out
     #transistors implementation
     # self.transistor(level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth)
     # Levels: 
@@ -499,14 +689,15 @@ class MUX_2(pya.PCellDeclarationHelper):
     #If out = 1, the via of the transistors are up
     #Input I0 and S0
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    self.transistor(1, x0, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
+    xp=x0-100
+    self.transistor(1, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I1", 0.001, 5).move((x0- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I0", 0.001, 5).move((xp- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)1
-    x1 = x0 + 5*d_x_101
+    x1 = xp + 5*d_x_101
     self.transistor(2, x1, y, w_d, self.n_d, self.l_d, True, False, 101, d_x_101, 2*d_x_101, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
@@ -518,13 +709,13 @@ class MUX_2(pya.PCellDeclarationHelper):
     self.transistor(3, x2, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, l_x, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I1_O", 0.001, 5).move((x2- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I0_O", 0.001, 5).move((x2- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     #Not S0
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)3
     x3 = x2 + 5*d_x_101
-    self.transistor(1, x3, y, w_d, self.n_d, self.l_d, True, False, 0, d_x_101, 2*d_x_101, 0)
+    self.transistor(1, x3, y, w_d, self.n_d, self.l_d, True, False, 0, d_x_101, 2*d_x_101, 3)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
         ("S0", 0.001, 5).move((x3- gate_edge)/ dbu, -Top_Path - 25 / dbu)
@@ -552,7 +743,7 @@ class MUX_2(pya.PCellDeclarationHelper):
     self.transistor(2, x6, y, w_d, self.n_d, self.l_d, True, False, 101, d_x_101, 2*d_x_101, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I0", 0.001, 5).move((x6- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I1", 0.001, 5).move((x6- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)7
@@ -560,7 +751,7 @@ class MUX_2(pya.PCellDeclarationHelper):
     self.transistor(3, x7, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I0_O", 0.001, 5).move((x7 - gate_edge) / dbu, -Top_Path - 25 / dbu)
+        ("I1_O", 0.001, 5).move((x7 - gate_edge) / dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     #Input I0_out and I1_out
@@ -569,7 +760,7 @@ class MUX_2(pya.PCellDeclarationHelper):
     self.transistor(1, x8, y, w_d, self.n_d, self.l_d, True, False, 0, 2*d_x_101, d_x_101, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I0_out", 0.001, 5).move((x8- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I1_o", 0.001, 5).move((x8- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)9
@@ -577,7 +768,7 @@ class MUX_2(pya.PCellDeclarationHelper):
     self.transistor(2, x9, y, w_d, self.n_d, self.l_d, True, False, 101, d_x_101, 2*d_x_101, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I1_out", 0.001, 5).move((x9- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I0_o", 0.001, 5).move((x9- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)10
@@ -605,6 +796,8 @@ class MUX_2(pya.PCellDeclarationHelper):
     # X2 to X9 connection
     #output
     interconnect = pya.Path([pya.Point((x2-gate_edge + (via + ov)/2)/dbu,gate_connection),
+        pya.Point((x2-gate_edge + (via + ov)/2)/dbu,gate_connection - 2*path_step),
+        pya.Point((x9-gate_edge + (via + ov)/2)/dbu,gate_connection - 2*path_step),
         pya.Point((x9-gate_edge + (via + ov)/2)/dbu,gate_connection),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(interconnect)
@@ -617,28 +810,127 @@ class MUX_2(pya.PCellDeclarationHelper):
     self.cell.shapes(gc).insert(input)
 
     # I0 Input
-    Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-        pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
+    Input = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
+        pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
-    self.cell.shapes(txt).insert(Input)
-
+    self.cell.shapes(gc).insert(Input)
+    
     # I1 Input
     Input = pya.Path([pya.Point((x6-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-        pya.Point((x6-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
+        pya.Point((x6-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
-    self.cell.shapes(txt).insert(Input)
+    self.cell.shapes(gc).insert(Input)
 
     # S Input
-    Input = pya.Path([pya.Point((x3-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-        pya.Point((x3-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-        ],path_width_dbu)
-    self.cell.shapes(txt).insert(Input)
+    if(self.pad == False):
+        Input = pya.Path([pya.Point((x3-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
+            pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+        self.cell.shapes(gc).insert(Input)
 
     # Out Input
     Out = pya.Path([pya.Point((x10-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-        pya.Point((x10-gate_edge + (via + ov)/2)/dbu, gate_connection + 3*path_step),
+        pya.Point((x10-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)
-    self.cell.shapes(txt).insert(Out)
+    self.cell.shapes(gc).insert(Out)
+
+    # Pads
+    if(self.pad):
+        
+        list_a = [-400, 0, 400]
+        list_b = [-200, 200]
+        for i in list_a:
+            for j in list_b:
+                self.create_pad(i, j)
+        
+        # Vdd connection
+        vdd = pya.Path([
+            pya.Point(-320/dbu, 200/dbu),
+            pya.Point(-320/dbu, Top_rail),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_rail),
+        ],self.rail*finger_width_dbu)
+        self.cell.shapes(sd).insert(vdd)
+
+        # Vss connection
+        vss = pya.Path([
+            pya.Point(320/dbu, -200/dbu),
+            pya.Point(320/dbu, Bottom_rail),
+            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_rail),
+        ],self.rail*finger_width_dbu)
+        self.cell.shapes(sd).insert(vss)
+
+        # Vbg connection
+        vbg = pya.Path([
+            pya.Point(0, 200/dbu),
+            pya.Point(0, gate_out),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, gate_out),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
+        ],finger_width_dbu)
+        self.cell.shapes(bm).insert(vbg)
+
+        # Vin1 connection
+        vin1 = pya.Path([
+            pya.Point(-320/dbu, -200/dbu),
+            pya.Point(-320/dbu, gate_in),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, gate_in),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+        ],path_width_dbu)
+        self.cell.shapes(gc).insert(vin1)
+
+        # Vin0 connection
+        vin0 = pya.Path([
+            pya.Point(0, -200/dbu),
+            pya.Point(0, -2*path_step + gate_in),
+            pya.Point((x6-gate_edge + (via + ov)/2)/dbu,-2*path_step + gate_in),
+            pya.Point((x6-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+        ],path_width_dbu)
+        self.cell.shapes(gc).insert(vin0)
+
+        if(self.sel == False):
+            # S Input
+            Input = pya.Path([pya.Point((x3-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
+                pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                ],path_width_dbu)
+            self.cell.shapes(gc).insert(Input)
+            #sel
+            sel = pya.Path([
+                pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Bottom_rail - self.rail*finger_width_dbu/2),
+            ],path_width_dbu)
+            self.cell.shapes(gc).insert(sel)
+            # via connection
+            z_via = pya.Path([
+                pya.Point((x3-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
+                pya.Point((x3-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
+            ],via/dbu)
+            self.cell.shapes(pv).insert(z_via)
+        else:
+            # S Input
+            Input = pya.Path([pya.Point((x3-gate_edge + (via + ov)/2)/dbu, gate_connection ),
+                pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Top_Edge),
+                ],path_width_dbu)
+            self.cell.shapes(gc).insert(Input)
+            #sel
+            sel = pya.Path([
+                pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Top_Edge),
+                pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Top_rail + self.rail*finger_width_dbu/2),
+            ],path_width_dbu)
+            self.cell.shapes(gc).insert(sel)
+            # via connection
+            z_via = pya.Path([
+                pya.Point((x3-gate_edge + (2*ov)/2)/dbu, Top_Edge + ov_dbu),
+                pya.Point((x3-gate_edge + (2*ov)/2)/dbu, Top_rail - ov_dbu + self.rail*finger_width_dbu/2),
+            ],via/dbu)
+            self.cell.shapes(pv).insert(z_via)
+
+        # Vout connection
+        vout = pya.Path([
+            pya.Point(320/dbu, 200/dbu),
+            pya.Point(320/dbu, gate_out),
+            pya.Point((x10-gate_edge + (via + ov)/2)/dbu, gate_out),
+            pya.Point((x10-gate_edge + (via + ov)/2)/dbu, Top_Edge),
+        ],path_width_dbu)
+        self.cell.shapes(gc).insert(vout)
 
   def produce_impl(self):
     
