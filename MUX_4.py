@@ -963,42 +963,6 @@ class MUX_4(pya.PCellDeclarationHelper):
         ],path_width_dbu)
     self.cell.shapes(gc).insert(interconnect)
 
-    # # I0 Input
-    # Input = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-    #     pya.Point((xp-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-    #     ],path_width_dbu)
-    # self.cell.shapes(txt).insert(Input)
-
-    # # I1 Input
-    # Input = pya.Path([pya.Point((x11-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-    #     pya.Point((x11-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-    #     ],path_width_dbu)
-    # self.cell.shapes(txt).insert(Input)
-
-    # # I2 Input
-    # Input = pya.Path([pya.Point((x4-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-    #     pya.Point((x4-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-    #     ],path_width_dbu)
-    # self.cell.shapes(txt).insert(Input)
-
-    # # I3 Input
-    # Input = pya.Path([pya.Point((x18-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-    #     pya.Point((x18-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-    #     ],path_width_dbu)
-    # self.cell.shapes(txt).insert(Input)
-
-    # # S0 Input
-    # Input = pya.Path([pya.Point((x2-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-    #     pya.Point((x2-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-    #     ],path_width_dbu)
-    # self.cell.shapes(txt).insert(Input)
-
-    # # S1 Input
-    # Input = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
-    #     pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection - 3*path_step),
-    #     ],path_width_dbu)
-    # self.cell.shapes(txt).insert(Input)
-
     # I0 Input
     Input = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
         pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
@@ -1023,7 +987,7 @@ class MUX_4(pya.PCellDeclarationHelper):
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
-    # Out Input
+    # Out
     Out = pya.Path([pya.Point((x21-gate_edge + (via + ov)/2)/dbu, gate_connection ),
         pya.Point((x21-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)

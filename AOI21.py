@@ -736,7 +736,7 @@ class AOI21_v2(pya.PCellDeclarationHelper):
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
-    # Out Input
+    # Out
     Out = pya.Path([pya.Point((x3-gate_edge + (via + ov)/2)/dbu, gate_connection ),
         pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)

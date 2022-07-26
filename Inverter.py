@@ -708,7 +708,7 @@ class Inverter(pya.PCellDeclarationHelper):
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
-    # Out Input
+    # Out
     Out = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_connection ),
         pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)
