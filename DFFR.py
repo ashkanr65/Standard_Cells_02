@@ -1,9 +1,8 @@
 # $autorun
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 16 10:01:16 2022
-
 @author: Ashkan
+Email:ashkan.rezaee@uab.cat
 """
 
 from typing import Sized
@@ -22,19 +21,19 @@ class DFFR_V2(pya.PCellDeclarationHelper):
 
     # declare the parameters
     self.param("n_d", self.TypeInt, "Number of Drive Fingers", default = 1)
-    self.param("l_d", self.TypeDouble, "Drive Length", default = 4)
-    self.param("l_l", self.TypeDouble, "Load Length", default = 4)
+    self.param("l_d", self.TypeDouble, "Drive Length", default = 2.5)
+    self.param("l_l", self.TypeDouble, "Load Length", default = 2.5)
     self.param("r", self.TypeDouble, "Ratio", default = 1)
-    self.param("o", self.TypeDouble, "Gate Overlap", default = 5)
-    self.param("fw", self.TypeDouble, "Finger Width", default = 5)
-    self.param("s", self.TypeDouble, "Finger Separation", default = 5)
-    self.param("via", self.TypeDouble, "via size", default = 5)
+    self.param("o", self.TypeDouble, "Gate Overlap", default = 2.5)
+    self.param("fw", self.TypeDouble, "Finger Width", default = 3.5)
+    self.param("s", self.TypeDouble, "Finger Separation", default = 2.5)
+    self.param("via", self.TypeDouble, "via size", default = 2.5)
     self.param("rail", self.TypeDouble, "rail to finger width ratio", default = 3)
     self.param("PDN_S", self.TypeDouble, "Extra distance for PDN", default = 0)
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "Standard Cell:(ratio=" + str((self.r)) + "Separate Load Gate"+")"
+    return "STD Cell DFFR:(ratio=" + str((self.r)) + ",Width="+ "90*"+str((self.n_d)) + ")"
 
   def can_create_from_shape_impl(self):
     # Implement the "Create PCell from shape" protocol: we can use any shape which 
@@ -801,13 +800,13 @@ class DFFR_V2(pya.PCellDeclarationHelper):
         ],path_width_dbu)
     self.cell.shapes(txt).insert(Input)
 
-    # Q Input
+    # Q out
     Out = pya.Path([pya.Point((x21-gate_edge + (via + ov)/2)/dbu, gate_connection ),
         pya.Point((x21-gate_edge + (via + ov)/2)/dbu, gate_connection + 3*path_step),
         ],path_width_dbu)
     self.cell.shapes(txt).insert(Out)
 
-    # Q' Input
+    # Q' out
     Out = pya.Path([pya.Point((x22-gate_edge + (via + ov)/2)/dbu, gate_connection ),
         pya.Point((x22-gate_edge + (via + ov)/2)/dbu, gate_connection + 3*path_step),
         ],path_width_dbu)
