@@ -876,6 +876,30 @@ class AOI21_v2(pya.PCellDeclarationHelper):
             ],via/dbu)
             self.cell.shapes(pv).insert(z_via)
 
+        if(self.AO == 3):
+            # Vin1 connection
+            vin1 = pya.Path([
+                pya.Point(-320/dbu, -200/dbu),
+                pya.Point(-320/dbu, gate_in),
+                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+            self.cell.shapes(gc).insert(vin1)
+            # Vin2 connection
+            vin2 = pya.Path([
+                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+            self.cell.shapes(gc).insert(vin2)
+            # Vin3 connection
+            vin3 = pya.Path([
+                pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x2-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x2-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+            self.cell.shapes(gc).insert(vin3)
+
         # Vout connection
         vout = pya.Path([
             pya.Point(320/dbu, 200/dbu),

@@ -794,60 +794,92 @@ class AOI211_v2(pya.PCellDeclarationHelper):
         ],finger_width_dbu)
         self.cell.shapes(bm).insert(vbg)
 
-        # #i0, i1 = Always on
-        X=[x0, x1, x2, x3]
-        flag0 = False
-        flag1 = False
-        for pads in self.AO:
-            if (pads == '1'):
-                in0 =np.min((self.indices(self.AO, '1')))
-                in1 =np.max((self.indices(self.AO, '1')))
-                if (flag1==False):
-                    vinAO1 = pya.Path([
-                        pya.Point(-320/dbu, -200/dbu),
-                        pya.Point(-320/dbu, gate_in),
-                        pya.Point((X[in0]-gate_edge + (via + ov)/2)/dbu, gate_in),
-                        pya.Point((X[in0]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
-                    ],path_width_dbu)
-                    self.cell.shapes(gc).insert(vinAO1)
-                    flag1 = True
-                else:
-                    vinAO2 = pya.Path([
-                        pya.Point(0, -200/dbu),
-                        pya.Point(0, -2*path_step + gate_in),
-                        pya.Point((X[in1]-gate_edge + (via + ov)/2)/dbu, -2*path_step + gate_in),
-                        pya.Point((X[in1]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
-                    ],path_width_dbu)
-                    self.cell.shapes(gc).insert(vinAO2)
+        #Select inputs
+        if(self.AO == ['1','1','1','1']):
+            # Vin1 connection
+            vin1 = pya.Path([
+                pya.Point(-320/dbu, -200/dbu),
+                pya.Point(-320/dbu, gate_in),
+                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+            self.cell.shapes(gc).insert(vin1)
+            # Vin2 connection
+            vin2 = pya.Path([
+                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+            self.cell.shapes(gc).insert(vin2)
+            # Vin3 connection
+            vin3 = pya.Path([
+                pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x2-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x2-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+            self.cell.shapes(gc).insert(vin3)
+            # Vin4 connection
+            vin4 = pya.Path([
+                pya.Point((x2-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x3-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+            self.cell.shapes(gc).insert(vin4)
 
-            if (pads == '0'):
-                in00 =np.min((self.indices(self.AO, '0')))
-                in01 =np.max((self.indices(self.AO, '0')))
-                if (flag0==False):
-                    vin2 = pya.Path([
-                        pya.Point((X[in00]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
-                        pya.Point((X[in00]-gate_edge + (via + ov)/2)/dbu, Bottom_rail - self.rail*finger_width_dbu/2),
-                    ],path_width_dbu)
-                    self.cell.shapes(gc).insert(vin2)
-                    # via connection
-                    z_via = pya.Path([
-                        pya.Point((X[in00]-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
-                        pya.Point((X[in00]-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
-                    ],via/dbu)
-                    self.cell.shapes(pv).insert(z_via)
-                    flag0 = True
-                else:
-                    vin2 = pya.Path([
-                        pya.Point((X[in01]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
-                        pya.Point((X[in01]-gate_edge + (via + ov)/2)/dbu, Bottom_rail - self.rail*finger_width_dbu/2),
-                    ],path_width_dbu)
-                    self.cell.shapes(gc).insert(vin2)
-                    # via connection
-                    z_via = pya.Path([
-                        pya.Point((X[in01]-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
-                        pya.Point((X[in01]-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
-                    ],via/dbu)
-                    self.cell.shapes(pv).insert(z_via)
+        else:
+            X=[x0, x1, x2, x3]
+            flag0 = False
+            flag1 = False
+            for pads in self.AO:
+                if (pads == '1'):
+                    in0 =np.min((self.indices(self.AO, '1')))
+                    in1 =np.max((self.indices(self.AO, '1')))
+                    if (flag1==False):
+                        vinAO1 = pya.Path([
+                            pya.Point(-320/dbu, -200/dbu),
+                            pya.Point(-320/dbu, gate_in),
+                            pya.Point((X[in0]-gate_edge + (via + ov)/2)/dbu, gate_in),
+                            pya.Point((X[in0]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                        ],path_width_dbu)
+                        self.cell.shapes(gc).insert(vinAO1)
+                        flag1 = True
+                    else:
+                        vinAO2 = pya.Path([
+                            pya.Point(0, -200/dbu),
+                            pya.Point(0, -2*path_step + gate_in),
+                            pya.Point((X[in1]-gate_edge + (via + ov)/2)/dbu, -2*path_step + gate_in),
+                            pya.Point((X[in1]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                        ],path_width_dbu)
+                        self.cell.shapes(gc).insert(vinAO2)
+
+                if (pads == '0'):
+                    in00 =np.min((self.indices(self.AO, '0')))
+                    in01 =np.max((self.indices(self.AO, '0')))
+                    if (flag0==False):
+                        vin2 = pya.Path([
+                            pya.Point((X[in00]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                            pya.Point((X[in00]-gate_edge + (via + ov)/2)/dbu, Bottom_rail - self.rail*finger_width_dbu/2),
+                        ],path_width_dbu)
+                        self.cell.shapes(gc).insert(vin2)
+                        # via connection
+                        z_via = pya.Path([
+                            pya.Point((X[in00]-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
+                            pya.Point((X[in00]-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
+                        ],via/dbu)
+                        self.cell.shapes(pv).insert(z_via)
+                        flag0 = True
+                    else:
+                        vin2 = pya.Path([
+                            pya.Point((X[in01]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                            pya.Point((X[in01]-gate_edge + (via + ov)/2)/dbu, Bottom_rail - self.rail*finger_width_dbu/2),
+                        ],path_width_dbu)
+                        self.cell.shapes(gc).insert(vin2)
+                        # via connection
+                        z_via = pya.Path([
+                            pya.Point((X[in01]-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
+                            pya.Point((X[in01]-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
+                        ],via/dbu)
+                        self.cell.shapes(pv).insert(z_via)
 
         # Vout connection
         vout = pya.Path([
