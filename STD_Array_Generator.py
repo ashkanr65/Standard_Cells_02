@@ -138,8 +138,7 @@ with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', '
                         else:
                             sub_pcell = ly.create_cell("MUX_4_V2", "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel0": s0, "sel1": s1})
                             array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                            temp = s0,s1
-                            text_param_list.append([device_id, "MUX_4_V2", i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, temp])
+                            text_param_list.append([device_id, "MUX_4_V2", i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, (s0,s1)])
                             device_id +=1
                             if(i>=x and j>y):
                                 break
