@@ -690,7 +690,7 @@ class MUX_4_V2(pya.PCellDeclarationHelper):
     #If out = 1, the via of the transistors are up
     #Input I0 and S0
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    xp=x0-200
+    xp=x0-370
     self.transistor(1, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\

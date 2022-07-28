@@ -8,7 +8,7 @@ class STD_Cell_V2(pya.Library):
   def __init__(self):
   
     # Set the description
-    self.description = "STD Cell Library"
+    self.description = "STD Cell Library V2"
     self.layout().register_pcell("AOI21_v2", AOI21_v2())
     self.layout().register_pcell("AOI211_v2", AOI211_v2())
     self.layout().register_pcell("AOI31_v2", AOI31_v2())
@@ -28,7 +28,7 @@ class STD_Cell_V2(pya.Library):
     
     # Register us with the name "STD_Cell".
     # If a library with that name already existed, it will be replaced then.
-    self.register("STD_Cell")
+    self.register("STD_Cell_V2")
 
 # Instantiate and register the library
 STD_Cell_V2()
