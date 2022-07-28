@@ -688,7 +688,7 @@ class XOR_V2(pya.PCellDeclarationHelper):
     #If out = 1, the via of the transistors are up
     #NOR2_0
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    xp=x0-120
+    xp=x0-200
     self.transistor(1, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 3)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
@@ -804,8 +804,8 @@ class XOR_V2(pya.PCellDeclarationHelper):
     self.cell.shapes(txt).insert(iTregion)
 
     # X0 to X4 connection
-    interconnect = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu,gate_connection),
-        pya.Point((x0-gate_edge + (via + ov)/2)/dbu,gate_connection + path_step),
+    interconnect = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu,gate_connection),
+        pya.Point((xp-gate_edge + (via + ov)/2)/dbu,gate_connection + path_step),
         pya.Point((x4-gate_edge + (via + ov)/2)/dbu,gate_connection + path_step),
         pya.Point((x4-gate_edge + (via + ov)/2)/dbu,gate_connection),
         ],path_width_dbu)
