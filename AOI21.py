@@ -912,23 +912,3 @@ class AOI21_v2(pya.PCellDeclarationHelper):
   def produce_impl(self):
     
     self.impl()
-
-class MyLib(pya.Library):
-
-  #The library where we will put the PCell into 
-
-  def __init__(self):
-  
-    # Set the description
-    self.description = "AOI21_v2"
-    
-    # Create the PCell declarations
-    self.layout().register_pcell("AOI21_v2", AOI21_v2())
-    # That would be the place to put in more PCells ...
-    
-    # Register us with the name "MyLib".
-    # If a library with that name already existed, it will be replaced then.
-    self.register("AOI21_v2")
-
-# Instantiate and register the library
-MyLib() 

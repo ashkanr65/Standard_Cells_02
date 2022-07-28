@@ -9,7 +9,7 @@ from typing import Sized
 import pya
 import math
 
-class MUX_2(pya.PCellDeclarationHelper):
+class MUX_2_V2(pya.PCellDeclarationHelper):
   """
   The PCell declaration for the Corbino
   """
@@ -17,7 +17,7 @@ class MUX_2(pya.PCellDeclarationHelper):
   def __init__(self):
 
     # Important: initialize the super class
-    super(MUX_2, self).__init__()
+    super(MUX_2_V2, self).__init__()
 
     # declare the parameters
     self.param("n_d", self.TypeInt, "Number of Drive Fingers", default = 1)
@@ -935,23 +935,3 @@ class MUX_2(pya.PCellDeclarationHelper):
   def produce_impl(self):
     
     self.impl()
-
-class MyLib(pya.Library):
-
-  #The library where we will put the PCell into 
-
-  def __init__(self):
-  
-    # Set the description
-    self.description = "MUX_2"
-    
-    # Create the PCell declarations
-    self.layout().register_pcell("MUX_2", MUX_2())
-    # That would be the place to put in more PCells ...
-    
-    # Register us with the name "MyLib".
-    # If a library with that name already existed, it will be replaced then.
-    self.register("MUX_2")
-
-# Instantiate and register the library
-MyLib() 
