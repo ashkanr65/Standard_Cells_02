@@ -8,7 +8,7 @@ class STD_Cell_V2(pya.Library):
   def __init__(self):
   
     # Set the description
-    self.description = "SmartKem STD Cell Library"
+    self.description = "STD Cell Library"
     self.layout().register_pcell("AOI21_v2", AOI21_v2())
     self.layout().register_pcell("AOI211_v2", AOI211_v2())
     self.layout().register_pcell("AOI31_v2", AOI31_v2())
@@ -26,9 +26,9 @@ class STD_Cell_V2(pya.Library):
     self.layout().register_pcell("NOR4_v2", NOR4_v2())
     self.layout().register_pcell("XOR_V2", XOR_V2())
     
-    # Register us with the name "SK".
+    # Register us with the name "STD_Cell".
     # If a library with that name already existed, it will be replaced then.
-    self.register("SK")
+    self.register("STD_Cell")
 
 # Instantiate and register the library
-SK()
+STD_Cell_V2()
