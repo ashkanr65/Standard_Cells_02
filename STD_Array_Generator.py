@@ -39,13 +39,12 @@ if array_cell is None:
 
 array_cell.prune_subcells(-1)
 
-# path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
-# if not os.path.isdir(path+'\SmartKem'):
-#    os.makedirs(path+'\SmartKem')
-# with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', 'w', newline='') as myfile:
+path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+if not os.path.isdir(path+'\SmartKem'):
+   os.makedirs(path+'\SmartKem')
+with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', 'w', newline='') as myfile:
       
-#   wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-while(not(i>=x and j>y)):
+    wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     for ones in inverter_id_params["one_positions"]:
         if (i>=x and j>y):
             break
@@ -56,7 +55,7 @@ while(not(i>=x and j>y)):
                 else:
                     sub_pcell = ly.create_cell(ones, "STD_Cell_V2", { "pad": 1,"n_d": n_f })
                     array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                    # text_param_list.append([device_id, i*x_dis, j*y_dis, w_d*n_d, l_d, c, l_l, r, bgp_yn, o, vgs, bgd_Vdd])
+                    text_param_list.append([device_id, ones, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, 'NULL'])
                     device_id +=1
                     if(i>=x and j>y):
                         break
@@ -80,7 +79,7 @@ while(not(i>=x and j>y)):
                             if twos == 'MUX_2_V2':
                                 sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel": TF})
                                 array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                # text_param_list.append([device_id, i*x_dis, j*y_dis, w_d*n_d, l_d, c, l_l, r, bgp_yn, o, vgs, bgd_Vdd])
+                                text_param_list.append([device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
                                 device_id +=1
                                 if(i>=x and j>y):
                                     break
@@ -92,7 +91,7 @@ while(not(i>=x and j>y)):
                             else:
                                 sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "q": TF})
                                 array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                # text_param_list.append([device_id, i*x_dis, j*y_dis, w_d*n_d, l_d, c, l_l, r, bgp_yn, o, vgs, bgd_Vdd])
+                                text_param_list.append([device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
                                 device_id +=1
                                 if(i>=x and j>y):
                                     break
@@ -115,7 +114,7 @@ while(not(i>=x and j>y)):
                         else:
                             sub_pcell = ly.create_cell(fours, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": M4})
                             array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                            # text_param_list.append([device_id, i*x_dis, j*y_dis, w_d*n_d, l_d, c, l_l, r, bgp_yn, o, vgs, bgd_Vdd])
+                            text_param_list.append([device_id, fours, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, M4])
                             device_id +=1
                             if(i>=x and j>y):
                                 break
@@ -137,9 +136,10 @@ while(not(i>=x and j>y)):
                         if (i>=x and j>y):
                             break
                         else:
-                            sub_pcell = ly.create_cell("MUX_4_V2", "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel0": s0, "sel1":s1})
+                            sub_pcell = ly.create_cell("MUX_4_V2", "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel0": s0, "sel1": s1})
                             array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                            # text_param_list.append([device_id, i*x_dis, j*y_dis, w_d*n_d, l_d, c, l_l, r, bgp_yn, o, vgs, bgd_Vdd])
+                            temp = s0,s1
+                            text_param_list.append([device_id, "MUX_4_V2", i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, temp])
                             device_id +=1
                             if(i>=x and j>y):
                                 break
@@ -162,7 +162,7 @@ while(not(i>=x and j>y)):
                         else:
                             sub_pcell = ly.create_cell(seven, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": AO})
                             array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                            # text_param_list.append([device_id, i*x_dis, j*y_dis, w_d*n_d, l_d, c, l_l, r, bgp_yn, o, vgs, bgd_Vdd])
+                            text_param_list.append([device_id, seven, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, AO])
                             device_id +=1
                             if(i>=x and j>y):
                                 break
@@ -171,4 +171,4 @@ while(not(i>=x and j>y)):
                                 i = 0
                             elif (i<x):
                                 i +=1
-    #   wr.writerows(text_param_list)
+    wr.writerows(text_param_list)
