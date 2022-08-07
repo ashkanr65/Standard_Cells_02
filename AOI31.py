@@ -787,12 +787,11 @@ class AOI31_v2(pya.PCellDeclarationHelper):
         # Vbg connection
         vbg = pya.Path([
             pya.Point(0, 200/dbu),
-            pya.Point(0, gate_out),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_out),
+            pya.Point(0, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
+            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
             pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
         ],finger_width_dbu)
         self.cell.shapes(bm).insert(vbg)
-
         #Select inputs
         if(self.AO == ['1','1','1','1']):
             # Vin1 connection

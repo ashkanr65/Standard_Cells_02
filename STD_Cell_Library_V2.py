@@ -1,6 +1,6 @@
 # $autorun
 
-class STD_Cell_V2(pya.Library):
+class STD_V2(pya.Library):
   """
   The library where we will put the PCells into 
   """
@@ -31,4 +31,4 @@ class STD_Cell_V2(pya.Library):
     self.register("STD_Cell_V2")
 
 # Instantiate and register the library
-STD_Cell_V2()
+STD_V2()
