@@ -770,24 +770,24 @@ class AOI31_v2(pya.PCellDeclarationHelper):
         
         # Vdd connection
         vdd = pya.Path([
-            pya.Point(-320/dbu, 200/dbu),
-            pya.Point(-320/dbu, Top_rail),
+            pya.Point((list_a[0]+80)/dbu, (list_b[1])/dbu),
+            pya.Point((list_a[0]+80)/dbu, Top_rail),
             pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_rail),
         ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vdd)
 
         # Vss connection
         vss = pya.Path([
-            pya.Point(320/dbu, -200/dbu),
-            pya.Point(320/dbu, Bottom_rail),
+            pya.Point((list_a[2]-80)/dbu, (list_b[0])/dbu),
+            pya.Point((list_a[2]-80)/dbu, Bottom_rail),
             pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_rail),
         ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vss)
 
         # Vbg connection
         vbg = pya.Path([
-            pya.Point(0, 200/dbu),
-            pya.Point(0, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
+            pya.Point((list_a[1])/dbu, (list_b[1])/dbu),
+            pya.Point((list_a[1])/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
             pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
             pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
         ],finger_width_dbu)
@@ -796,8 +796,8 @@ class AOI31_v2(pya.PCellDeclarationHelper):
         if(self.AO == ['1','1','1','1']):
             # Vin1 connection
             vin1 = pya.Path([
-                pya.Point(-320/dbu, -200/dbu),
-                pya.Point(-320/dbu, gate_in),
+                pya.Point((list_a[0]+80)/dbu, (list_b[0])/dbu),
+                pya.Point((list_a[0]+80)/dbu, gate_in),
                 pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
                 pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
             ],path_width_dbu)
@@ -834,8 +834,8 @@ class AOI31_v2(pya.PCellDeclarationHelper):
                     in1 =np.max((self.indices(self.AO, '1')))
                     if (flag1==False):
                         vinAO1 = pya.Path([
-                            pya.Point(-320/dbu, -200/dbu),
-                            pya.Point(-320/dbu, gate_in),
+                            pya.Point((list_a[0]+80)/dbu, (list_b[0])/dbu),
+                            pya.Point((list_a[0]+80)/dbu, gate_in),
                             pya.Point((X[in0]-gate_edge + (via + ov)/2)/dbu, gate_in),
                             pya.Point((X[in0]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
                         ],path_width_dbu)
@@ -843,8 +843,8 @@ class AOI31_v2(pya.PCellDeclarationHelper):
                         flag1 = True
                     else:
                         vinAO2 = pya.Path([
-                            pya.Point(0, -200/dbu),
-                            pya.Point(0, -2*path_step + gate_in),
+                            pya.Point((list_a[1])/dbu, (list_b[0])/dbu),
+                            pya.Point((list_a[1])/dbu, -2*path_step + gate_in),
                             pya.Point((X[in1]-gate_edge + (via + ov)/2)/dbu, -2*path_step + gate_in),
                             pya.Point((X[in1]-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
                         ],path_width_dbu)
@@ -881,8 +881,8 @@ class AOI31_v2(pya.PCellDeclarationHelper):
 
         # Vout connection
         vout = pya.Path([
-            pya.Point(320/dbu, 200/dbu),
-            pya.Point(320/dbu, gate_out),
+            pya.Point((list_a[2]-80)/dbu, (list_b[1])/dbu),
+            pya.Point((list_a[2]-80)/dbu, gate_out),
             pya.Point((x4-gate_edge + (via + ov)/2)/dbu, gate_out),
             pya.Point((x4-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)

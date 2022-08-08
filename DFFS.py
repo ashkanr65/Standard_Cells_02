@@ -1015,24 +1015,24 @@ class DFFS_V2(pya.PCellDeclarationHelper):
         
         # Vdd connection
         vdd = pya.Path([
-            pya.Point(-320/dbu, 200/dbu),
-            pya.Point(-320/dbu, Top_rail),
+            pya.Point((list_a[0]+80)/dbu, (list_b[1])/dbu),
+            pya.Point((list_a[0]+80)/dbu, Top_rail),
             pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_rail),
         ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vdd)
 
         # Vss connection
         vss = pya.Path([
-            pya.Point(320/dbu, -200/dbu),
-            pya.Point(320/dbu, Bottom_rail),
+            pya.Point((list_a[2]-80)/dbu, (list_b[0])/dbu),
+            pya.Point((list_a[2]-80)/dbu, Bottom_rail),
             pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_rail),
         ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vss)
 
         # Vbg connection
         vbg = pya.Path([
-            pya.Point(0, 200/dbu),
-            pya.Point(0, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
+            pya.Point((list_a[1])/dbu, (list_b[1])/dbu),
+            pya.Point((list_a[1])/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
         ],finger_width_dbu)
@@ -1040,8 +1040,8 @@ class DFFS_V2(pya.PCellDeclarationHelper):
 
         # Vin1 connection
         vin1 = pya.Path([
-            pya.Point(-320/dbu, -200/dbu),
-            pya.Point(-320/dbu, gate_in),
+            pya.Point((list_a[0]+80)/dbu, (list_b[0])/dbu),
+            pya.Point((list_a[0]+80)/dbu, gate_in),
             pya.Point((x5-gate_edge + (via + ov)/2)/dbu, gate_in),
             pya.Point((x5-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
@@ -1049,8 +1049,8 @@ class DFFS_V2(pya.PCellDeclarationHelper):
 
         # Vin2 connection
         vin2 = pya.Path([
-            pya.Point(0, -200/dbu),
-            pya.Point(0, -2*path_step + gate_in),
+            pya.Point((list_a[1])/dbu, (list_b[0])/dbu),
+            pya.Point((list_a[1])/dbu, -2*path_step + gate_in),
             pya.Point((x20-gate_edge + (via + ov)/2)/dbu,-2*path_step + gate_in),
             pya.Point((x20-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
@@ -1059,8 +1059,8 @@ class DFFS_V2(pya.PCellDeclarationHelper):
         if (self.q == True):
             # Vout connection
             vout = pya.Path([
-                pya.Point(320/dbu, 200/dbu),
-                pya.Point(320/dbu, gate_out),
+                pya.Point((list_a[2]-80)/dbu, (list_b[1])/dbu),
+                pya.Point((list_a[2]-80)/dbu, gate_out),
                 pya.Point((x22-gate_edge + (via + ov)/2)/dbu, gate_out),
                 pya.Point((x22-gate_edge + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
@@ -1068,8 +1068,8 @@ class DFFS_V2(pya.PCellDeclarationHelper):
         else:
             # Vout connection
             vout = pya.Path([
-                pya.Point(320/dbu, 200/dbu),
-                pya.Point(320/dbu, gate_out),
+                pya.Point((list_a[2]-80)/dbu, (list_b[1])/dbu),
+                pya.Point((list_a[2]-80)/dbu, gate_out),
                 pya.Point((x21-gate_edge + (via + ov)/2)/dbu, gate_out),
                 pya.Point((x21-gate_edge + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
