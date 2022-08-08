@@ -974,7 +974,7 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
         else:
             vout = pya.Path([
                 pya.Point((list_a[2]-80)/dbu, (list_b[1])/dbu),
-                pya.Point((list_a[2]-80)/dbu/dbu, gate_out),
+                pya.Point((list_a[2]-80)/dbu, gate_out),
                 pya.Point((x14-gate_edge + (via + ov)/2)/dbu, gate_out),
                 pya.Point((x14-gate_edge + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
