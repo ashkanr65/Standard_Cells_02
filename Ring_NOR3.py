@@ -689,7 +689,7 @@ class Ring_NOR3(pya.PCellDeclarationHelper):
     #If out = 1, the via of the transistors are up
     #Ring_1
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    xp=x0-510
+    xp=x0-456.5
     self.transistor(1, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
@@ -1004,6 +1004,15 @@ class Ring_NOR3(pya.PCellDeclarationHelper):
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
         ],finger_width_dbu)
         self.cell.shapes(bm).insert(vbg)
+
+        # Vin1 connection
+        vin1 = pya.Path([
+            pya.Point((list_a[0]+80)/dbu, (list_b[0])/dbu),
+            pya.Point((list_a[0]+80)/dbu, gate_in),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, gate_in),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+        ],path_width_dbu)
+        self.cell.shapes(gc).insert(vin1)
 
         # Vout connection
         if (self.buffer == True):

@@ -9,7 +9,7 @@ from typing import Sized
 import pya
 import math
 
-class Ring_NAND2(pya.PCellDeclarationHelper):
+class Ring_NAND3(pya.PCellDeclarationHelper):
   """
   The PCell declaration for the Corbino
   """
@@ -17,7 +17,7 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
   def __init__(self):
 
     # Important: initialize the super class
-    super(Ring_NAND2, self).__init__()
+    super(Ring_NAND3, self).__init__()
 
     # declare the parameters
     self.param("n_d", self.TypeInt, "Number of Drive Fingers", default = 1)
@@ -35,13 +35,13 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "STD Cell Ring_Osc_NAND2:(ratio=" + str((self.r)) + ",Width="+ "90*"+str((self.n_d)) + ")"
+    return "STD Cell Ring_Osc_NAND3:(ratio=" + str((self.r)) + ",Width="+ "90*"+str((self.n_d)) + ")"
 
   def can_create_from_shape_impl(self):
     # Implement the "Create PCell from shape" protocol: we can use any shape which 
     # has a finite bounding box
     return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
-
+  
   def create_pad(self, x, y):
         # This is the main part of the implementation: create the layout
 
@@ -224,7 +224,7 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
                 posy + 2.5 / self.layout.dbu - 20 * i)).round_corners(0, l_via_cir / 2, nr)
             # print region
             self.cell.shapes(pv).insert(circle_region)
-  
+
   def transistor(self, level, x, y, w_i, n_i, l_i, bg, load, Int_Con, ov_l, ov_r, out):
     # Other design rules and other "fixed" variables, such as layer identifiers, path widths, via hole sizes, etc.
     nr = 128 # Number of points in a circle
@@ -705,92 +705,91 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)2
-    x2 = x1 + 5*l_x
-    self.transistor(3, x2, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, right_ov_load, 1)
+    x2 = x1 + 5*d_x_0
+    self.transistor(1, x2, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_1, right_ov_load, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("Out", 0.001, 5).move((x2 - gate_edge) / dbu, Top_Path + 20 / dbu)
+        ("I2", 0.001, 5).move((x2- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+    self.cell.shapes(txt).insert(iTregion)
+
+    # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)3
+    x3 = x2 + 5*l_x
+    self.transistor(3, x3, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
+    #gates name
+    iTregion = pya.TextGenerator.default_generator().text\
+        ("Out", 0.001, 5).move((x3 - gate_edge) / dbu, Top_Path + 20 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     #Ring_2
-    # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)3
-    x3= x2 + 5*d_x_101
-    self.transistor(0, x3, y, w_d, self.n_d, self.l_d, True, False, 0, l_x, 0, 1)
-    #gates name
-    iTregion = pya.TextGenerator.default_generator().text\
-        ("I0", 0.001, 5).move((x3- gate_edge)/ dbu, -Top_Path - 25 / dbu)
-    self.cell.shapes(txt).insert(iTregion)
-
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)4
-    x4 = x3 + 5*d_x_0
-    self.transistor(1, x4, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 1)
+    x4 = x3 + 5*d_x_101
+    self.transistor(0, x4, y, w_d, self.n_d, self.l_d, True, False, 0, l_x, 0, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I1", 0.001, 5).move((x4- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I0", 0.001, 5).move((x4- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)5
-    x5 = x4 + 5*l_x
-    self.transistor(3, x5, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 0)
+    x5 = x4 + 5*d_x_0
+    self.transistor(1, x5, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("Out", 0.001, 5).move((x5 - gate_edge) / dbu, Top_Path + 20 / dbu)
+        ("I1", 0.001, 5).move((x5- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
-    #Ring_3
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)6
-    x6= x5 + 5*d_x_101
-    self.transistor(0, x6, y, w_d, self.n_d, self.l_d, True, False, 0, l_x, 0, 0)
+    x6 = x5 + 5*d_x_0
+    self.transistor(1, x6, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_1, right_ov_load, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I0", 0.001, 5).move((x6- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I2", 0.001, 5).move((x6- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)7
-    x7 = x6 + 5*d_x_0
-    self.transistor(1, x7, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 0)
+    x7 = x6 + 5*l_x
+    self.transistor(3, x7, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I1", 0.001, 5).move((x7- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("Out", 0.001, 5).move((x7 - gate_edge) / dbu, Top_Path + 20 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
+    #Ring_3
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)8
-    x8 = x7 + 5*l_x
-    self.transistor(3, x8, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
+    x8 = x7 + 5*d_x_101
+    self.transistor(0, x8, y, w_d, self.n_d, self.l_d, True, False, 0, l_x, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("Out", 0.001, 5).move((x8 - gate_edge) / dbu, Top_Path + 20 / dbu)
+        ("I0", 0.001, 5).move((x8- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
-    #Ring_4
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)9
-    x9= x8 + 5*d_x_101
-    self.transistor(0, x9, y, w_d, self.n_d, self.l_d, True, False, 0, l_x, 0, 1)
+    x9 = x8 + 5*d_x_0
+    self.transistor(1, x9, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I0", 0.001, 5).move((x9- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I1", 0.001, 5).move((x9- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)10
     x10 = x9 + 5*d_x_0
-    self.transistor(1, x10, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 1)
+    self.transistor(1, x10, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_1, right_ov_load, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I1", 0.001, 5).move((x10- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I2", 0.001, 5).move((x10- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)11
     x11 = x10 + 5*l_x
-    self.transistor(3, x11, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 0)
+    self.transistor(3, x11, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
         ("Out", 0.001, 5).move((x11 - gate_edge) / dbu, Top_Path + 20 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
-    #Ring_5
+    #Ring_4
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)12
-    x12= x11 + 5*d_x_101
-    self.transistor(0, x12, y, w_d, self.n_d, self.l_d, True, False, 0, l_x, 0, 0)
+    x12 = x11 + 5*d_x_101
+    self.transistor(0, x12, y, w_d, self.n_d, self.l_d, True, False, 0, l_x, 0, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
         ("I0", 0.001, 5).move((x12- gate_edge)/ dbu, -Top_Path - 25 / dbu)
@@ -798,21 +797,62 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)13
     x13 = x12 + 5*d_x_0
-    self.transistor(1, x13, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 0)
+    self.transistor(1, x13, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
         ("I1", 0.001, 5).move((x13- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)14
-    x14 = x13 + 5*l_x
-    self.transistor(3, x14, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
+    x14 = x13 + 5*d_x_0
+    self.transistor(1, x14, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_1, right_ov_load, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("Out", 0.001, 5).move((x14 - gate_edge) / dbu, Top_Path + 20 / dbu)
+        ("I2", 0.001, 5).move((x14- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
-    # Buffer
+    # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)15
+    x15 = x14 + 5*l_x
+    self.transistor(3, x15, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 0)
+    #gates name
+    iTregion = pya.TextGenerator.default_generator().text\
+        ("Out", 0.001, 5).move((x15 - gate_edge) / dbu, Top_Path + 20 / dbu)
+    self.cell.shapes(txt).insert(iTregion)
+
+    #Ring_5
+    # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)16
+    x16 = x15 + 5*d_x_101
+    self.transistor(0, x16, y, w_d, self.n_d, self.l_d, True, False, 0, l_x, 0, 0)
+    #gates name
+    iTregion = pya.TextGenerator.default_generator().text\
+        ("I0", 0.001, 5).move((x16- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+    self.cell.shapes(txt).insert(iTregion)
+
+    # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)17
+    x17 = x16 + 5*d_x_0
+    self.transistor(1, x17, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 0)
+    #gates name
+    iTregion = pya.TextGenerator.default_generator().text\
+        ("I1", 0.001, 5).move((x17- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+    self.cell.shapes(txt).insert(iTregion)
+
+    # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)18
+    x18 = x17 + 5*d_x_0
+    self.transistor(1, x18, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_1, right_ov_load, 0)
+    #gates name
+    iTregion = pya.TextGenerator.default_generator().text\
+        ("I2", 0.001, 5).move((x18- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+    self.cell.shapes(txt).insert(iTregion)
+
+    # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)19
+    x19 = x18 + 5*l_x
+    self.transistor(3, x19, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
+    #gates name
+    iTregion = pya.TextGenerator.default_generator().text\
+        ("Out", 0.001, 5).move((x19 - gate_edge) / dbu, Top_Path + 20 / dbu)
+    self.cell.shapes(txt).insert(iTregion)
+
+    #buffer
     if (self.buffer == True):
         x0_buffer = -((3*self.n_d*self.l_d)+(3*self.n_d+1)*finger_width)/2
         #Nand 
@@ -822,29 +862,37 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
             + 3*ov +2*via)/5
         gate_edge_buffer = ((3*self.n_d)*self.l_d+(3*self.n_d+1)*finger_width)/2
 
-        # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)15
-        x15= x14 + 5*d_x_101_buffer
-        self.transistor(0, x15, y, w_d, 3*self.n_d, self.l_d, True, False, 0, l_x, 0, 1)
+        # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)20
+        x20= x19 + 5*d_x_101_buffer
+        self.transistor(0, x20, y, w_d, 3*self.n_d, self.l_d, True, False, 0, l_x, 0, 1)
         #gates name
-        iTregion = pya.TextGenerator.default_generator().text\
-            ("I0", 0.001, 5).move((x15- gate_edge)/ dbu, -Top_Path - 25 / dbu)
-        self.cell.shapes(txt).insert(iTregion)
+        # iTregion = pya.TextGenerator.default_generator().text\
+        #     ("I0", 0.001, 5).move((x20- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        # self.cell.shapes(txt).insert(iTregion)
 
-        # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)16
-        x16 = x15 + 5*d_x_0_buffer
-        self.transistor(1, x16, y, w_d, 3*self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 1)
+        # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)21
+        x21 = x20 + 5*d_x_0_buffer
+        self.transistor(1, x21, y, w_d, 3*self.n_d, self.l_d, True, False, 100, d_x_0, right_ov_load, 1)
         #gates name
-        iTregion = pya.TextGenerator.default_generator().text\
-            ("I1", 0.001, 5).move((x16- gate_edge)/ dbu, -Top_Path - 25 / dbu)
-        self.cell.shapes(txt).insert(iTregion)
+        # iTregion = pya.TextGenerator.default_generator().text\
+        #     ("I1", 0.001, 5).move((x21- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        # self.cell.shapes(txt).insert(iTregion)
 
-        # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)17
-        x17 = x16 + 5*l_x_buffer
-        self.transistor(3, x17, y, w_d, 3*p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
+        # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)22
+        x22 = x21 + 5*d_x_0_buffer
+        self.transistor(1, x22, y, w_d, 3*self.n_d, self.l_d, True, False, 100, d_x_1, right_ov_load, 1)
         #gates name
-        iTregion = pya.TextGenerator.default_generator().text\
-            ("Out", 0.001, 5).move((x17 - gate_edge) / dbu, Top_Path + 20 / dbu)
-        self.cell.shapes(txt).insert(iTregion)
+        # iTregion = pya.TextGenerator.default_generator().text\
+        #     ("I2", 0.001, 5).move((x22- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        # self.cell.shapes(txt).insert(iTregion)
+
+        # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)23
+        x23 = x22 + 5*l_x_buffer
+        self.transistor(3, x23, y, w_d, 3*p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
+        #gates name
+        # iTregion = pya.TextGenerator.default_generator().text\
+        #     ("Out", 0.001, 5).move((x23 - gate_edge) / dbu, Top_Path + 20 / dbu)
+        # self.cell.shapes(txt).insert(iTregion)
 
     # I0 Input
     Input = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
@@ -858,55 +906,67 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
     #     ],path_width_dbu)
     # self.cell.shapes(gc).insert(Input)
 
+    # # I2 Input
+    # Input = pya.Path([pya.Point((x2-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
+    #     pya.Point((x2-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+    #     ],path_width_dbu)
+    # self.cell.shapes(gc).insert(Input)
+
     # Out
     if (self.buffer == True):
-        Out = pya.Path([pya.Point((x17-gate_edge_buffer + (via + ov)/2)/dbu, gate_connection ),
-            pya.Point((x17-gate_edge_buffer + (via + ov)/2)/dbu, Top_Edge),
+        Out = pya.Path([pya.Point((x23-gate_edge_buffer + (via + ov)/2)/dbu, gate_connection ),
+            pya.Point((x23-gate_edge_buffer + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
         self.cell.shapes(gc).insert(Out)
 
     else:
-        Out = pya.Path([pya.Point((x14-gate_edge + (via + ov)/2)/dbu, gate_connection ),
-            pya.Point((x14-gate_edge + (via + ov)/2)/dbu, Top_Edge),
+        Out = pya.Path([pya.Point((x19-gate_edge + (via + ov)/2)/dbu, gate_connection ),
+            pya.Point((x19-gate_edge + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
         self.cell.shapes(gc).insert(Out)
 
-    # Out2_In3,4
-    interconnect = pya.Path([pya.Point((x2-gate_edge + (via + ov)/2)/dbu, gate_connection),
-        pya.Point((x4-gate_edge + (via + ov)/2)/dbu, gate_connection),
+    # In1,2
+    interconnect = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection),
+        pya.Point((x2-gate_edge + (via + ov)/2)/dbu, -gate_connection),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(interconnect)
 
-    # Out5_In6,7
-    interconnect = pya.Path([pya.Point((x5-gate_edge + (via + ov)/2)/dbu, -gate_connection),
-        pya.Point((x7-gate_edge + (via + ov)/2)/dbu, -gate_connection),
+    # Out3_In4,5,6
+    interconnect = pya.Path([pya.Point((x3-gate_edge + (via + ov)/2)/dbu, gate_connection),
+        pya.Point((x6-gate_edge + (via + ov)/2)/dbu, gate_connection),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(interconnect)
 
-    # Out8_In9,10
-    interconnect = pya.Path([pya.Point((x8-gate_edge + (via + ov)/2)/dbu, gate_connection),
-        pya.Point((x10-gate_edge + (via + ov)/2)/dbu, gate_connection),
+    # Out7_In8,9,10
+    interconnect = pya.Path([pya.Point((x7-gate_edge + (via + ov)/2)/dbu, -gate_connection),
+        pya.Point((x10-gate_edge + (via + ov)/2)/dbu, -gate_connection),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(interconnect)
 
-    # Out11_In12,13
-    interconnect = pya.Path([pya.Point((x11-gate_edge + (via + ov)/2)/dbu, -gate_connection),
-        pya.Point((x13-gate_edge + (via + ov)/2)/dbu, -gate_connection),
+    # Out11_In12,13,14
+    interconnect = pya.Path([pya.Point((x11-gate_edge + (via + ov)/2)/dbu, gate_connection),
+        pya.Point((x14-gate_edge + (via + ov)/2)/dbu, gate_connection),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(interconnect)
 
-    # Out14_In15,16
+    # Out15_In16,17,18
+    interconnect = pya.Path([pya.Point((x15-gate_edge + (via + ov)/2)/dbu, -gate_connection),
+        pya.Point((x18-gate_edge + (via + ov)/2)/dbu, -gate_connection),
+        ],path_width_dbu)
+    self.cell.shapes(gc).insert(interconnect)
+
+    # Out19_In20,21,22
     if (self.buffer == True):
-        interconnect = pya.Path([pya.Point((x14-gate_edge + (via + ov)/2)/dbu, gate_connection),
-            pya.Point((x16-gate_edge_buffer + (via + ov)/2)/dbu, gate_connection),
+        interconnect = pya.Path([pya.Point((x19-gate_edge + (via + ov)/2)/dbu, gate_connection),
+            pya.Point((x22-gate_edge_buffer + (via + ov)/2)/dbu, gate_connection),
             ],path_width_dbu)
         self.cell.shapes(gc).insert(interconnect)
-    
+
     # IN_OUT
-    interconnect = pya.Path([pya.Point((x14-gate_edge + (via + ov)/2)/dbu, gate_connection),
-        pya.Point((x14-gate_edge + (via + ov)/2)/dbu, 0),
-        pya.Point((x1-gate_edge + (via + ov)/2)/dbu, 0),
-        pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection),
+    interconnect = pya.Path([pya.Point((x19-gate_edge + (via + ov)/2)/dbu, gate_connection),
+        pya.Point((x19-gate_edge + (via + ov)/2)/dbu, 0),
+        pya.Point((x2-gate_edge + (via + ov)/2)/dbu, 0),
+        pya.Point((x2-gate_edge + (via + ov)/2)/dbu, -gate_connection),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(interconnect)
 
@@ -931,14 +991,14 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
         vss = pya.Path([
             pya.Point((list_a[2]-80)/dbu, (list_b[0])/dbu),
             pya.Point((list_a[2]-80)/dbu, Bottom_rail),
-            pya.Point((x14-gate_edge + (via + ov)/2)/dbu, Bottom_rail),
+            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_rail),
         ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vss)
 
         # Vbg connection
         vbg = pya.Path([
-            pya.Point((list_a[1]), (list_b[1])/dbu),
-            pya.Point((list_a[1]), Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
+            pya.Point((list_a[1])/dbu, (list_b[1])/dbu),
+            pya.Point((list_a[1])/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
         ],finger_width_dbu)
@@ -953,30 +1013,21 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
         ],path_width_dbu)
         self.cell.shapes(gc).insert(vin1)
 
-        # # Vin2 connection
-        # vin2 = pya.Path([
-        #     pya.Point(0, -200/dbu),
-        #     pya.Point(0, -2*path_step + gate_in),
-        #     pya.Point((x1-gate_edge + (via + ov)/2)/dbu,-2*path_step + gate_in),
-        #     pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
-        # ],path_width_dbu)
-        # self.cell.shapes(gc).insert(vin2)
-
         # Vout connection
         if (self.buffer == True):
             vout = pya.Path([
                 pya.Point((list_a[2]-80)/dbu, (list_b[1])/dbu),
                 pya.Point((list_a[2]-80)/dbu, gate_out),
-                pya.Point((x17-gate_edge_buffer + (via + ov)/2)/dbu, gate_out),
-                pya.Point((x17-gate_edge_buffer + (via + ov)/2)/dbu, Top_Edge),
+                pya.Point((x23-gate_edge_buffer + (via + ov)/2)/dbu, gate_out),
+                pya.Point((x23-gate_edge_buffer + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vout)
         else:
             vout = pya.Path([
                 pya.Point((list_a[2]-80)/dbu, (list_b[1])/dbu),
                 pya.Point((list_a[2]-80)/dbu, gate_out),
-                pya.Point((x14-gate_edge + (via + ov)/2)/dbu, gate_out),
-                pya.Point((x14-gate_edge + (via + ov)/2)/dbu, Top_Edge),
+                pya.Point((x19-gate_edge + (via + ov)/2)/dbu, gate_out),
+                pya.Point((x19-gate_edge + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vout)
 
@@ -991,15 +1042,15 @@ class MyLib(pya.Library):
   def __init__(self):
   
     # Set the description
-    self.description = "Ring_NAND2"
+    self.description = "Ring_NAND3"
     
     # Create the PCell declarations
-    self.layout().register_pcell("Ring_NAND2", Ring_NAND2())
+    self.layout().register_pcell("Ring_NAND3", Ring_NAND3())
     # That would be the place to put in more PCells ...
     
     # Register us with the name "MyLib".
     # If a library with that name already existed, it will be replaced then.
-    self.register("Ring_NAND2")
+    self.register("Ring_NAND3")
 
 # Instantiate and register the library
 MyLib() 

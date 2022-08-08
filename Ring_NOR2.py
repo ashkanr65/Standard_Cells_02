@@ -688,7 +688,7 @@ class Ring_NOR2(pya.PCellDeclarationHelper):
     #If out = 1, the via of the transistors are up
     # Ring_1
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    xp=x0-350
+    xp=x0-456.5
     self.transistor(1, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, right_ov_load, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
