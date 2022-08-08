@@ -35,7 +35,7 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "STD Cell NAND2:(ratio=" + str((self.r)) + ",Width="+ "90*"+str((self.n_d)) + ")"
+    return "STD Cell Ring_Osc_NAND2:(ratio=" + str((self.r)) + ",Width="+ "90*"+str((self.n_d)) + ")"
 
   def can_create_from_shape_impl(self):
     # Implement the "Create PCell from shape" protocol: we can use any shape which 
@@ -814,7 +814,8 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
 
     # Buffer
     if (self.buffer == True):
-        x0_buffer = -((3*self.n_d*self.l_d)+(3*self.n_d+1)*finger_width)/2 
+        x0_buffer = -((3*self.n_d*self.l_d)+(3*self.n_d+1)*finger_width)/2
+        #Nand 
         d_x_0_buffer = ((-x0_buffer-x0) + finger_sep +2*finger_width) / 5
         d_x_101_buffer = ((-x0_buffer-x0) + 2*finger_sep + finger_width) / 5
         l_x_buffer = (((3*p*self.n_d*self.l_l)+(3*p*self.n_d+1)*finger_width)/2 -x0_buffer\
@@ -920,24 +921,24 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
         
         # Vdd connection
         vdd = pya.Path([
-            pya.Point(-320/dbu, 200/dbu),
-            pya.Point(-320/dbu, Top_rail),
+            pya.Point((list_a[0]+80)/dbu, (list_b[1])/dbu),
+            pya.Point((list_a[0]+80)/dbu, Top_rail),
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_rail),
         ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vdd)
 
         # Vss connection
         vss = pya.Path([
-            pya.Point(320/dbu, -200/dbu),
-            pya.Point(320/dbu, Bottom_rail),
+            pya.Point((list_a[2]-80)/dbu, (list_b[0])/dbu),
+            pya.Point((list_a[2]-80)/dbu, Bottom_rail),
             pya.Point((x14-gate_edge + (via + ov)/2)/dbu, Bottom_rail),
         ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vss)
 
         # Vbg connection
         vbg = pya.Path([
-            pya.Point(0, 200/dbu),
-            pya.Point(0, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
+            pya.Point((list_a[1]), (list_b[1])/dbu),
+            pya.Point((list_a[1]), Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
         ],finger_width_dbu)
@@ -945,8 +946,8 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
 
         # Vin1 connection
         vin1 = pya.Path([
-            pya.Point(-320/dbu, -200/dbu),
-            pya.Point(-320/dbu, gate_in),
+            pya.Point((list_a[0]+80)/dbu, (list_b[0])/dbu),
+            pya.Point((list_a[0]+80)/dbu, gate_in),
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, gate_in),
             pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
@@ -964,16 +965,16 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
         # Vout connection
         if (self.buffer == True):
             vout = pya.Path([
-                pya.Point(320/dbu, 200/dbu),
-                pya.Point(320/dbu, gate_out),
+                pya.Point((list_a[2]-80)/dbu, (list_b[1])/dbu),
+                pya.Point((list_a[2]-80)/dbu, gate_out),
                 pya.Point((x17-gate_edge_buffer + (via + ov)/2)/dbu, gate_out),
                 pya.Point((x17-gate_edge_buffer + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vout)
         else:
             vout = pya.Path([
-                pya.Point(320/dbu, 200/dbu),
-                pya.Point(320/dbu, gate_out),
+                pya.Point((list_a[2]-80)/dbu, (list_b[1])/dbu),
+                pya.Point((list_a[2]-80)/dbu/dbu, gate_out),
                 pya.Point((x14-gate_edge + (via + ov)/2)/dbu, gate_out),
                 pya.Point((x14-gate_edge + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
