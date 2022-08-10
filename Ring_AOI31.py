@@ -926,7 +926,7 @@ class Ring_AOI31(pya.PCellDeclarationHelper):
         # self.cell.shapes(txt).insert(iTregion)
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)27
-        x27 = x26 + 5*d_x_101_buffer
+        x27 = x26 + 5*d_x_1_buffer
         self.transistor(1, x27, y, w_d, rt*self.n_d, self.l_d, True, False, 100, d_x_1_buffer, 2*d_x_1_buffer, 1)
         #gates name
         # iTregion = pya.TextGenerator.default_generator().text\
