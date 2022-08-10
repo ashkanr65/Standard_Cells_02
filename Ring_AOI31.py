@@ -662,7 +662,7 @@ class Ring_AOI31(pya.PCellDeclarationHelper):
     # x0 = 0
     d_x_0 = ((-2*x0) + finger_sep ) / 5
     d_x_1 = ((-2*x0) + 2*finger_sep + path_width) / 5
-    d_x_100 = ((-2*x0) + 2*finger_sep ) / 5
+    d_x_100 = ((-2*x0) + finger_sep ) / 5
     d_x_101 = ((-2*x0) + 2*finger_sep + finger_width) / 5
     d_x_110 = ((-2*x0) + 2*finger_sep + finger_width) / 5
     d_x_111 = ((-2*x0) + 2*finger_sep) / 5
@@ -901,6 +901,7 @@ class Ring_AOI31(pya.PCellDeclarationHelper):
         x0_buffer = -((rt*self.n_d*self.l_d)+(rt*self.n_d+1)*finger_width)/2 
         #Nand 
         d_x_0_buffer = ((-x0_buffer-x0) + finger_sep +2*finger_width) / 5
+        d_x_1_buffer = ((-2*x0_buffer) + finger_sep) / 5
         #NOR
         d_x_buffer_0 = ((-x0_buffer-x0) + 2*finger_sep + finger_width) / 5
         d_x_101_buffer = ((-2*x0_buffer) + 2*finger_sep + finger_width) / 5
@@ -917,16 +918,16 @@ class Ring_AOI31(pya.PCellDeclarationHelper):
         # self.cell.shapes(txt).insert(iTregion)
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)26
-        x26 = x25 + 5*d_x_0_buffer
-        self.transistor(1, x26, y, w_d, rt*self.n_d, self.l_d, True, False, 100, d_x_0, d_x_0, 1)
+        x26 = x25 + 5*d_x_1_buffer
+        self.transistor(1, x26, y, w_d, rt*self.n_d, self.l_d, True, False, 100, d_x_1_buffer, d_x_1_buffer, 1)
         #gates name
         # iTregion = pya.TextGenerator.default_generator().text\
         #     ("I_NA1", 0.001, 5).move((x26- gate_edge)/ dbu, -Top_Path - 25 / dbu)
         # self.cell.shapes(txt).insert(iTregion)
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)27
-        x27 = x26 + 5*d_x_0_buffer
-        self.transistor(1, x27, y, w_d, rt*self.n_d, self.l_d, True, False, 100, d_x_100, 2*d_x_100, 1)
+        x27 = x26 + 5*d_x_101_buffer
+        self.transistor(1, x27, y, w_d, rt*self.n_d, self.l_d, True, False, 100, d_x_1_buffer, 2*d_x_1_buffer, 1)
         #gates name
         # iTregion = pya.TextGenerator.default_generator().text\
         #     ("I_NA2", 0.001, 5).move((x27- gate_edge)/ dbu, -Top_Path - 25 / dbu)

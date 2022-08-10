@@ -659,7 +659,7 @@ class Ring_NAND3(pya.PCellDeclarationHelper):
     # x0 = 0
     d_x_0 = ((-2*x0) + finger_sep ) / 5
     d_x_1 = ((-2*x0) + 2*finger_sep + path_width) / 5
-    d_x_100 = ((-2*x0) + 2*finger_sep ) / 5
+    d_x_100 = ((-2*x0) + finger_sep ) / 5
     d_x_101 = ((-2*x0) + 2*finger_sep + finger_width) / 5
     d_x_110 = ((-2*x0) + 2*finger_sep + finger_width) / 5
     d_x_111 = ((-2*x0) + 2*finger_sep) / 5
