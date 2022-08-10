@@ -854,7 +854,7 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
         ("Out", 0.001, 5).move((x19 - gate_edge) / dbu, Top_Path + 20 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
-    # Ring_3
+    # Ring_5
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)20
     x20=x19 + 5*d_x_101
     self.transistor(1, x20, y, w_d, self.n_d, self.l_d, True, False, 0, l_x, 0, 0)
@@ -933,8 +933,16 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
         # self.cell.shapes(txt).insert(iTregion)
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)28
-        x28 = x27 + 5*l_x_buffer
-        self.transistor(3, x28, y, w_d, rt*p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
+        x28 = x27 + 5*d_x_101_buffer
+        self.transistor(2, x28, y, w_d, self.n_d, self.l_d, True, False, 101, d_x_101, right_ov_load, 0)
+        #gates name
+        iTregion = pya.TextGenerator.default_generator().text\
+            ("I3", 0.001, 5).move((x28- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        self.cell.shapes(txt).insert(iTregion)
+
+        # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)29
+        x29 = x28 + 5*l_x_buffer
+        self.transistor(3, x29, y, w_d, rt*p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
         #gates name
         # iTregion = pya.TextGenerator.default_generator().text\
         #     ("Out", 0.001, 5).move((x28 - gate_edge) / dbu, Top_Path + 20 / dbu)
@@ -967,8 +975,8 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
 
     # Out
     if (self.buffer == True):
-        Out = pya.Path([pya.Point((x28-gate_edge_buffer + (via + ov)/2)/dbu, gate_connection ),
-            pya.Point((x28-gate_edge_buffer + (via + ov)/2)/dbu, Top_Edge),
+        Out = pya.Path([pya.Point((x29-gate_edge_buffer + (via + ov)/2)/dbu, gate_connection ),
+            pya.Point((x29-gate_edge_buffer + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
         self.cell.shapes(gc).insert(Out)
 
@@ -1071,8 +1079,8 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
             vout = pya.Path([
                 pya.Point((list_a[2]-80)/dbu, (list_b[1])/dbu),
                 pya.Point((list_a[2]-80)/dbu, gate_out),
-                pya.Point((x28-gate_edge_buffer + (via + ov)/2)/dbu, gate_out),
-                pya.Point((x28-gate_edge_buffer + (via + ov)/2)/dbu, Top_Edge),
+                pya.Point((x29-gate_edge_buffer + (via + ov)/2)/dbu, gate_out),
+                pya.Point((x29-gate_edge_buffer + (via + ov)/2)/dbu, Top_Edge),
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vout)
         else:

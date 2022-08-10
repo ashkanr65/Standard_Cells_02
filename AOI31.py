@@ -713,7 +713,7 @@ class AOI31_v2(pya.PCellDeclarationHelper):
         ("I_NA2", 0.001, 5).move((x2- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
-    # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)4
+    # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)3
     x3 = x2 + 5*d_x_101
     self.transistor(2, x3, y, w_d, self.n_d, self.l_d, True, False, 101, d_x_101, 2*d_x_101, 0)
     #gates name
