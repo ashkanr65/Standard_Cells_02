@@ -453,17 +453,15 @@ class NAND3_v2(pya.PCellDeclarationHelper):
       
     #Positions
     if (level == 0):
-        vdd = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - gate_overlap\
+        vdd0 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - gate_overlap\
             , posx + drain_backbone_region.bbox().top, VDD_T_E))
-
-        extended = vdd 
-        self.cell.shapes(sd).insert(extended)
+        self.cell.shapes(sd).insert(vdd0)
     if (level == 1):
-        vdd = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, drain_backbone_region.bbox().right\
+        vdd1 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - gate_overlap\
             , posx + drain_backbone_region.bbox().top, VDD_T_E))
-        self.cell.shapes(sd).insert(vdd)
+        self.cell.shapes(sd).insert(vdd1)
     if (level == 3):
-        vss = pya.Region(pya.Box(posx - source_backbone_region.bbox().bottom, source_backbone_region.bbox().left\
+        vss = pya.Region(pya.Box(posx - source_backbone_region.bbox().bottom, VSS_T_E + gate_overlap\
             , posx - source_backbone_region.bbox().top, VSS_B_E))
         self.cell.shapes(sd).insert(vss)
         
@@ -719,25 +717,25 @@ class NAND3_v2(pya.PCellDeclarationHelper):
     self.cell.shapes(txt).insert(iTregion)
 
     # I0 Input
-    Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
+    Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
         pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
     # I1 Input
-    Input = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
+    Input = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
         pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
     # I2 Input
-    Input = pya.Path([pya.Point((x2-gate_edge + (via + ov)/2)/dbu, -gate_connection ),
+    Input = pya.Path([pya.Point((x2-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
         pya.Point((x2-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
     # Out
-    Out = pya.Path([pya.Point((x3-gate_edge + (via + ov)/2)/dbu, gate_connection ),
+    Out = pya.Path([pya.Point((x3-gate_edge + (via + ov)/2)/dbu, y/dbu+gate_connection ),
         pya.Point((x3-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Out)
