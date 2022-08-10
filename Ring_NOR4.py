@@ -978,9 +978,9 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
             ],path_width_dbu)
         self.cell.shapes(gc).insert(Out)
 
-    # In1,2,3
-    interconnect = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, -gate_connection),
-        pya.Point((x3-gate_edge + (via + ov)/2)/dbu, -gate_connection),
+    # In0,1,2
+    interconnect = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, -gate_connection),
+        pya.Point((x2-gate_edge + (via + ov)/2)/dbu, -gate_connection),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(interconnect)
     
