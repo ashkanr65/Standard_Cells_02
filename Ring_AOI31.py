@@ -35,7 +35,7 @@ class Ring_AOI31(pya.PCellDeclarationHelper):
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "STD Cell Ring_Osc_NOR4:(ratio=" + str((self.r)) + ",Width="+ "90*"+str((self.n_d)) + ")"
+    return "STD Cell Ring_Osc_AOI31:(ratio=" + str((self.r)) + ",Width="+ "90*"+str((self.n_d)) + ")"
 
   def can_create_from_shape_impl(self):
     # Implement the "Create PCell from shape" protocol: we can use any shape which 
