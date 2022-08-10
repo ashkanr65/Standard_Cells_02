@@ -697,7 +697,7 @@ class DFFR_V2(pya.PCellDeclarationHelper):
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)1
-    x1 = xp + 5*d_x_0
+    x1 = xp + 5*d_x_100
     self.transistor(1, x1, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, d_x_0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\

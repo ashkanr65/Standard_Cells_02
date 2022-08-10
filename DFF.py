@@ -690,14 +690,14 @@ class DFF_V2(pya.PCellDeclarationHelper):
     #Input I0 and S0
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
     xp=x0-350
-    self.transistor(1, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
+    self.transistor(0, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
         ("clk", 0.001, 5).move((xp- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)1
-    x1 = xp + 5*d_x_101
+    x1 = xp + 5*d_x_100
     self.transistor(1, x1, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, d_x_0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
