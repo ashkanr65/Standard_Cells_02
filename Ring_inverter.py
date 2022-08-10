@@ -775,15 +775,20 @@ class Ring_Inv(pya.PCellDeclarationHelper):
 
     # Buffer
     if (self.buffer == True):
-        x0_buffer = -((3*self.n_d*self.l_d)+(3*self.n_d+1)*finger_width)/2 
+        rt = 3
+        x0_buffer = -((rt*self.n_d*self.l_d)+(rt*self.n_d+1)*finger_width)/2 
+        #Nand 
+        d_x_0_buffer = ((-x0_buffer-x0) + finger_sep +2*finger_width) / 5
+        #NOR
         d_x_buffer_0 = ((-x0_buffer-x0) + 2*finger_sep + finger_width) / 5
         d_x_101_buffer = ((-2*x0_buffer) + 2*finger_sep + finger_width) / 5
-        l_x_buffer = (((3*p*self.n_d*self.l_l)+(3*p*self.n_d+1)*finger_width)/2 -x0_buffer\
+        l_x_buffer = (((rt*p*self.n_d*self.l_l)+(rt*p*self.n_d+1)*finger_width)/2 -x0_buffer\
             + 3*ov +2*via)/5
-        gate_edge_buffer = ((3*self.n_d)*self.l_d+(3*self.n_d+1)*finger_width)/2
+        gate_edge_buffer = ((rt*self.n_d)*self.l_d+(rt*self.n_d+1)*finger_width)/2
+
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)10
         x10 = x9 + 5*d_x_buffer_0
-        self.transistor(1, x10, y, w_d, 3*self.n_d, self.l_d, True, False, 0, l_x, right_ov_load, 1)
+        self.transistor(1, x10, y, w_d, rt*self.n_d, self.l_d, True, False, 0, l_x, right_ov_load, 1)
         #gates name
         # iTregion = pya.TextGenerator.default_generator().text\
         #     ("I0", 0.001, 5).move((x10- gate_edge)/ dbu, -Top_Path - 25 / dbu)
@@ -791,7 +796,7 @@ class Ring_Inv(pya.PCellDeclarationHelper):
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)11
         x11 = x10 + 5*l_x_buffer
-        self.transistor(3, x11, y, w_d, 3*p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
+        self.transistor(3, x11, y, w_d, rt*p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
         #gates name
         # iTregion = pya.TextGenerator.default_generator().text\
         #     ("Out", 0.001, 5).move((x11 - gate_edge) / dbu, Top_Path + 20 / dbu)
