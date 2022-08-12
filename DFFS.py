@@ -990,13 +990,13 @@ class DFFS_V2(pya.PCellDeclarationHelper):
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
-    # Q out
+    # Q' out
     Out = pya.Path([pya.Point((x21-gate_edge + (via + ov)/2)/dbu, y/dbu+gate_connection ),
         pya.Point((x21-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Out)
 
-    # Q' out
+    # Q out
     Out = pya.Path([pya.Point((x22-gate_edge + (via + ov)/2)/dbu, y/dbu+gate_connection ),
         pya.Point((x22-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)
