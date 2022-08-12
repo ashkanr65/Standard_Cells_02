@@ -651,7 +651,7 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
     gc2= self.layout.layer(10,0)
     q = self.l_d / self.l_l
     p = int(self.r / q)
-    y = 400
+    y = 0
     Top_Edge = (y + w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S)/dbu  #Top edge of Cell
     Top_rail = Top_Edge + self.rail*finger_width_dbu/2
     Bottom_Edge = (y-(w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S))/dbu #Bottom edge of Cell
@@ -690,7 +690,11 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
     #If out = 1, the via of the transistors are up
     # Ring_1
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    xp=x0-456.5
+    if (self.buffer == True):
+        tr_n=55
+    else:
+        tr_n=36
+    xp=x0-(self.n_d*tr_n*(finger_width+self.l_d)/2)
     self.transistor(1, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
@@ -932,7 +936,7 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)28
         x28 = x27 + 5*d_x_101_buffer
-        self.transistor(2, x28, y, w_d, self.n_d, self.l_d, True, False, 101, d_x_101, right_ov_load, 0)
+        self.transistor(2, x28, y, w_d, rt*self.n_d, self.l_d, True, False, 101, d_x_101, right_ov_load, 0)
         #gates name
         iTregion = pya.TextGenerator.default_generator().text\
             ("I3", 0.001, 5).move((x28- gate_edge)/ dbu, -Top_Path - 25 / dbu)

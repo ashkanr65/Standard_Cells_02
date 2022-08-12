@@ -687,7 +687,11 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
     #If out = 1, the via of the transistors are up
     #Ring_1
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    xp=x0-456.5
+    if (self.buffer == True):
+        tr_n=28
+    else:
+        tr_n=20
+    xp=x0-(self.n_d*tr_n*(finger_width+self.l_d)/2)
     self.transistor(0, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
@@ -816,6 +820,7 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
         x0_buffer = -((rt*self.n_d*self.l_d)+(rt*self.n_d+1)*finger_width)/2 
         #Nand 
         d_x_0_buffer = ((-x0_buffer-x0) + finger_sep +2*finger_width) / 5
+        d_x_1_buffer = ((-2*x0_buffer) + finger_sep) / 5
         #NOR
         d_x_buffer_0 = ((-x0_buffer-x0) + 2*finger_sep + finger_width) / 5
         d_x_101_buffer = ((-2*x0_buffer) + 2*finger_sep + finger_width) / 5
@@ -824,7 +829,7 @@ class Ring_NAND2(pya.PCellDeclarationHelper):
         gate_edge_buffer = ((rt*self.n_d)*self.l_d+(rt*self.n_d+1)*finger_width)/2
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)15
-        x15= x14 + 5*d_x_101_buffer
+        x15= x14 + 5*d_x_buffer_0
         self.transistor(0, x15, y, w_d, rt*self.n_d, self.l_d, True, False, 0, l_x, 0, 1)
         #gates name
         iTregion = pya.TextGenerator.default_generator().text\

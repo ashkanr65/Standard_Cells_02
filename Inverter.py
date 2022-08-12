@@ -686,14 +686,16 @@ class Inverter_V2(pya.PCellDeclarationHelper):
     #If out = 0, the via of the transistors are down
     #If out = 1, the via of the transistors are up
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    self.transistor(1, x0, y, w_d, self.n_d, self.l_d, True, False, 0, 0, right_ov_load, 0)
+    tr_n=3
+    xp=x0-(self.n_d*tr_n*(finger_width+self.l_d)/2)
+    self.transistor(1, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, right_ov_load, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I0", 0.001, 5).move((x0- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I0", 0.001, 5).move((xp- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)1
-    x1 = x0 + 5*l_x
+    x1 = xp + 5*l_x
     self.transistor(3, x1, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
@@ -701,8 +703,8 @@ class Inverter_V2(pya.PCellDeclarationHelper):
     self.cell.shapes(txt).insert(iTregion)
 
     # I0 Input
-    Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
-        pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+    Input = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
+        pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
@@ -725,7 +727,7 @@ class Inverter_V2(pya.PCellDeclarationHelper):
         vdd = pya.Path([
             pya.Point((list_a[0]+80)/dbu, (list_b[1])/dbu),
             pya.Point((list_a[0]+80)/dbu, Top_rail),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_rail),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_rail),
         ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vdd)
 
@@ -741,8 +743,8 @@ class Inverter_V2(pya.PCellDeclarationHelper):
         vbg = pya.Path([
             pya.Point((list_a[1])/dbu, (list_b[1])/dbu),
             pya.Point((list_a[1])/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
         ],finger_width_dbu)
         self.cell.shapes(bm).insert(vbg)
 
@@ -750,8 +752,8 @@ class Inverter_V2(pya.PCellDeclarationHelper):
         vin = pya.Path([
             pya.Point((list_a[0]+80)/dbu, (list_b[0])/dbu),
             pya.Point((list_a[0]+80)/dbu, gate_in),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, gate_in),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
         self.cell.shapes(gc).insert(vin)
 

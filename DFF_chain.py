@@ -690,7 +690,8 @@ class DFF_chain(pya.PCellDeclarationHelper):
         Bottom_Edge = (y-(w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S))/dbu #Bottom edge of Cell
         #CHAIN 1
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-        xp=x0-456.5
+        tr_n=38
+        xp=x0-(self.n_d*tr_n*(finger_width+self.l_d)/2)
         self.transistor(0, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
         #gates name
         iTregion = pya.TextGenerator.default_generator().text\
@@ -699,7 +700,7 @@ class DFF_chain(pya.PCellDeclarationHelper):
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)1
         x1 = xp + 5*d_x_100
-        self.transistor(1, x1, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, d_x_0, 3)
+        self.transistor(1, x1, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, d_x_0, 0)
         #gates name
         iTregion = pya.TextGenerator.default_generator().text\
             ("D", 0.001, 5).move((x1- gate_edge)/ dbu, -Top_Path - 25 / dbu)

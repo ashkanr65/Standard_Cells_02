@@ -686,14 +686,16 @@ class AOI21_v2(pya.PCellDeclarationHelper):
     #If out = 0, the via of the transistors are down
     #If out = 1, the via of the transistors are up
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    self.transistor(0, x0, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
+    tr_n=4
+    xp=x0-(self.n_d*tr_n*(finger_width+self.l_d)/2)
+    self.transistor(0, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I_NA0", 0.001, 5).move((x0- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I_NA0", 0.001, 5).move((xp- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)1
-    x1 = x0 + 5*d_x_0
+    x1 = xp + 5*d_x_0
     self.transistor(1, x1, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, d_x_0, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
@@ -717,8 +719,8 @@ class AOI21_v2(pya.PCellDeclarationHelper):
     self.cell.shapes(txt).insert(iTregion)
 
     # I0_nand Input
-    Input = pya.Path([pya.Point((x0-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
-        pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+    Input = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
+        pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
         ],path_width_dbu)
     self.cell.shapes(gc).insert(Input)
 
@@ -753,7 +755,7 @@ class AOI21_v2(pya.PCellDeclarationHelper):
         vdd = pya.Path([
             pya.Point((list_a[0]+80)/dbu, (list_b[1])/dbu),
             pya.Point((list_a[0]+80)/dbu, Top_rail),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_rail),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_rail),
         ],self.rail*finger_width_dbu)
         self.cell.shapes(sd).insert(vdd)
 
@@ -769,8 +771,8 @@ class AOI21_v2(pya.PCellDeclarationHelper):
         vbg = pya.Path([
             pya.Point((list_a[1])/dbu, (list_b[1])/dbu),
             pya.Point((list_a[1])/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
-            pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu/2),
+            pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Top_Edge + self.rail*finger_width_dbu - finger_width_dbu),
         ],finger_width_dbu)
         self.cell.shapes(bm).insert(vbg)
 
@@ -778,14 +780,14 @@ class AOI21_v2(pya.PCellDeclarationHelper):
         if(self.AO == 0):
             # Vin1 connection
             vin1 = pya.Path([
-                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
-                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_rail - self.rail*finger_width_dbu/2),
+                pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_rail - self.rail*finger_width_dbu/2),
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vin1)
             # via connection
             z_via = pya.Path([
-                pya.Point((x0-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
-                pya.Point((x0-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
+                pya.Point((xp-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
+                pya.Point((xp-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
             ],via/dbu)
             self.cell.shapes(pv).insert(z_via)
 
@@ -813,8 +815,8 @@ class AOI21_v2(pya.PCellDeclarationHelper):
             vin1 = pya.Path([
                 pya.Point((list_a[0]+80)/dbu, (list_b[0])/dbu),
                 pya.Point((list_a[0]+80)/dbu, gate_in),
-                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
-                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                pya.Point((xp-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vin1)
 
@@ -847,8 +849,8 @@ class AOI21_v2(pya.PCellDeclarationHelper):
             vin1 = pya.Path([
                 pya.Point((list_a[0]+80)/dbu, (list_b[0])/dbu),
                 pya.Point((list_a[0]+80)/dbu, gate_in),
-                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
-                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                pya.Point((xp-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vin1)
 
@@ -879,13 +881,13 @@ class AOI21_v2(pya.PCellDeclarationHelper):
             vin1 = pya.Path([
                 pya.Point((list_a[0]+80)/dbu, (list_b[0])/dbu),
                 pya.Point((list_a[0]+80)/dbu, gate_in),
-                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
-                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+                pya.Point((xp-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vin1)
             # Vin2 connection
             vin2 = pya.Path([
-                pya.Point((x0-gate_edge + (via + ov)/2)/dbu, gate_in),
+                pya.Point((xp-gate_edge + (via + ov)/2)/dbu, gate_in),
                 pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_in),
                 pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
             ],path_width_dbu)
