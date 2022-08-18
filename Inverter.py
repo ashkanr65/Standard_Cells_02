@@ -648,7 +648,7 @@ class Inverter_V2(pya.PCellDeclarationHelper):
     gc2= self.layout.layer(10,0)
     q = self.l_d / self.l_l
     p = int(self.r / q)
-    y = 300
+    y = 0
     Top_Edge = (y + w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S)/dbu  #Top edge of Cell
     Top_rail = Top_Edge + self.rail*finger_width_dbu/2
     Bottom_Edge = (y-(w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S))/dbu #Bottom edge of Cell
