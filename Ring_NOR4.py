@@ -691,7 +691,7 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
     # Ring_1
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
     if (self.buffer == True):
-        tr_n=55
+        tr_n=54
     else:
         tr_n=36
     xp=x0-(self.n_d*tr_n*(finger_width+self.l_d)/2)
@@ -1036,7 +1036,7 @@ class Ring_NOR4(pya.PCellDeclarationHelper):
     # Pads
     if(self.pad):
         
-        list_a = [-400, 0, 400]
+        list_a = [-600, 0, 600]
         list_b = [-200, 200]
         for i in list_a:
             for j in list_b:

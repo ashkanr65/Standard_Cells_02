@@ -865,7 +865,7 @@ class Ring_Inv(pya.PCellDeclarationHelper):
     # Pads
     if(self.pad):
         
-        list_a = [-400, 0, 400]
+        list_a = [-600, 0, 600]
         list_b = [-200, 200]
         for i in list_a:
             for j in list_b:
