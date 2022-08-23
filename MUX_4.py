@@ -1141,6 +1141,18 @@ class MUX_4_V2(pya.PCellDeclarationHelper):
             pya.Point((x21-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)
         self.cell.shapes(gc).insert(vout)
+    
+    else:
+        # S0 Input
+        Input = pya.Path([pya.Point((x2-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
+            pya.Point((x2-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+        self.cell.shapes(gc).insert(Input)
+        # S1 Input
+        Input = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
+            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+            ],path_width_dbu)
+        self.cell.shapes(gc).insert(Input)
 
   def produce_impl(self):
     

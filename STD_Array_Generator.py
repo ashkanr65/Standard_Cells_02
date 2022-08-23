@@ -26,12 +26,12 @@ inverter_id_params ={
     "Mod_7":[['0','0','1','1'], ['0','1','0','1'],['1','0','0','1'],['0','1','1','0'],['1','0','1','0'],['1','1','0','0'],['1','1','1','1']]  
     }
 device_id = 0
-i = 0
+i = -1
 j = 0
 x_dis = 1000
 y_dis = 600
-x = 19
-y = 15
+x = 16
+y = 24
 if array_cell is None:
   print("Creating array_cell")
   array_cell = ly.create_cell("TOP")
@@ -45,54 +45,77 @@ if not os.path.isdir(path+'\SmartKem'):
 with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', 'w', newline='') as myfile:
       
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-    for ones in inverter_id_params["one_positions"]:
-        if (i>=x and j>y):
-            break
-        else:
-            for n_f in inverter_id_params["n_f"]:
-                if (i>=x and j>y):
-                    break
-                else:
-                    sub_pcell = ly.create_cell(ones, "STD_Cell_V2", { "pad": 1,"n_d": n_f })
-                    array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                    text_param_list.append([device_id, ones, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, 'NULL'])
-                    device_id +=1
-                    if(i>=x and j>y):
+    for _ in range (2):
+        for ones in inverter_id_params["one_positions"]:
+            if (i>=x and j>y):
+                break
+            else:
+                for n_f in inverter_id_params["n_f"]:
+                    if (i>=x and j>y):
                         break
-                    elif (i>=x and j<=y):
-                        j += 1
-                        i = 0
-                    elif (i<x):
-                        i +=1
-    for n_f in inverter_id_params["n_f"]:
-        if (i>=x and j>y):
-            break
-        else:
-            for TF in inverter_id_params["Mod_2"]:
-                if (i>=x and j>y):
-                    break
-                else:
-                    for twos in inverter_id_params["two_positions"]:
-                        if (i>=x and j>y):
+                    else:
+                        if(i>=x and j>y):
                             break
-                        else:
-                            if twos == 'MUX_2_V2':
-                                sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel": TF})
-                                array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                text_param_list.append([device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
-                                device_id +=1
-                                if(i>=x and j>y):
-                                    break
-                                elif (i>=x and j<=y):
-                                    j += 1
-                                    i = 0
-                                elif (i<x):
-                                    i +=1
+                        elif (i>=x and j<=y):
+                            j += 1
+                            i = 0
+                        elif (i<x):
+                            i +=1
+                        sub_pcell = ly.create_cell(ones, "STD_Cell_V2", { "pad": 1,"n_d": n_f })
+                        array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
+                        text_param_list.append([device_id, ones, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, 'NULL'])
+                        device_id +=1
+                        
+        for n_f in inverter_id_params["n_f"]:
+            if (i>=x and j>y):
+                break
+            else:
+                for TF in inverter_id_params["Mod_2"]:
+                    if (i>=x and j>y):
+                        break
+                    else:
+                        for twos in inverter_id_params["two_positions"]:
+                            if (i>=x and j>y):
+                                break
                             else:
-                                sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "q": TF})
-                                array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                text_param_list.append([device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
-                                device_id +=1
+                                if twos == 'MUX_2_V2':
+                                    if(i>=x and j>y):
+                                        break
+                                    elif (i>=x and j<=y):
+                                        j += 1
+                                        i = 0
+                                    elif (i<x):
+                                        i +=1
+                                    sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel": TF})
+                                    array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
+                                    text_param_list.append([device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
+                                    device_id +=1
+                                    
+                                else:
+                                    if(i>=x and j>y):
+                                        break
+                                    elif (i>=x and j<=y):
+                                        j += 1
+                                        i = 0
+                                    elif (i<x):
+                                        i +=1
+                                    sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "q": TF})
+                                    array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
+                                    text_param_list.append([device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
+                                    device_id +=1
+                                    
+        for n_f in inverter_id_params["n_f"]:
+            if (i>=x and j>y):
+                break
+            else:
+                for M4 in inverter_id_params["Mod_4"]:
+                    if (i>=x and j>y):
+                        break
+                    else:
+                        for fours in inverter_id_params["four_positions"]:
+                            if (i>=x and j>y):
+                                break
+                            else:
                                 if(i>=x and j>y):
                                     break
                                 elif (i>=x and j<=y):
@@ -100,74 +123,58 @@ with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', '
                                     i = 0
                                 elif (i<x):
                                     i +=1
-    for n_f in inverter_id_params["n_f"]:
-        if (i>=x and j>y):
-            break
-        else:
-            for M4 in inverter_id_params["Mod_4"]:
-                if (i>=x and j>y):
-                    break
-                else:
-                    for fours in inverter_id_params["four_positions"]:
-                        if (i>=x and j>y):
-                            break
-                        else:
-                            sub_pcell = ly.create_cell(fours, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": M4})
-                            array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                            text_param_list.append([device_id, fours, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, M4])
-                            device_id +=1
-                            if(i>=x and j>y):
-                                break
-                            elif (i>=x and j<=y):
-                                j += 1
-                                i = 0
-                            elif (i<x):
-                                i +=1
+                                sub_pcell = ly.create_cell(fours, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": M4})
+                                array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
+                                text_param_list.append([device_id, fours, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, M4])
+                                device_id +=1
+                                
 
-    for n_f in inverter_id_params["n_f"]:
-        if (i>=x and j>y):
-            break
-        else:
-            for s1 in inverter_id_params["Mod_2"]:
-                if (i>=x and j>y):
-                    break
-                else:
-                    for s0 in inverter_id_params["Mod_2"]:
-                        if (i>=x and j>y):
-                            break
-                        else:
-                            sub_pcell = ly.create_cell("MUX_4_V2", "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel0": s0, "sel1": s1})
-                            array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                            text_param_list.append([device_id, "MUX_4_V2", i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, (s0,s1)])
-                            device_id +=1
-                            if(i>=x and j>y):
+        for n_f in inverter_id_params["n_f"]:
+            if (i>=x and j>y):
+                break
+            else:
+                for s1 in inverter_id_params["Mod_2"]:
+                    if (i>=x and j>y):
+                        break
+                    else:
+                        for s0 in inverter_id_params["Mod_2"]:
+                            if (i>=x and j>y):
                                 break
-                            elif (i>=x and j<=y):
-                                j += 1
-                                i = 0
-                            elif (i<x):
-                                i +=1
-    for seven in inverter_id_params["seven_positions"]:
-        if (i>=x and j>y):
-            break
-        else:
-            for n_f in inverter_id_params["n_f"]:
-                if (i>=x and j>y):
-                    break
-                else:
-                    for AO in inverter_id_params["Mod_7"]:
-                        if (i>=x and j>y):
-                            break
-                        else:
-                            sub_pcell = ly.create_cell(seven, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": AO})
-                            array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                            text_param_list.append([device_id, seven, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, AO])
-                            device_id +=1
-                            if(i>=x and j>y):
+                            else:
+                                if(i>=x and j>y):
+                                    break
+                                elif (i>=x and j<=y):
+                                    j += 1
+                                    i = 0
+                                elif (i<x):
+                                    i +=1
+                                sub_pcell = ly.create_cell("MUX_4_V2", "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel0": s0, "sel1": s1})
+                                array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
+                                text_param_list.append([device_id, "MUX_4_V2", i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, (s0,s1)])
+                                device_id +=1
+                                
+        for seven in inverter_id_params["seven_positions"]:
+            if (i>=x and j>y):
+                break
+            else:
+                for n_f in inverter_id_params["n_f"]:
+                    if (i>=x and j>y):
+                        break
+                    else:
+                        for AO in inverter_id_params["Mod_7"]:
+                            if (i>=x and j>y):
                                 break
-                            elif (i>=x and j<=y):
-                                j += 1
-                                i = 0
-                            elif (i<x):
-                                i +=1
+                            else:
+                                if(i>=x and j>y):
+                                    break
+                                elif (i>=x and j<=y):
+                                    j += 1
+                                    i = 0
+                                elif (i<x):
+                                    i +=1
+                                sub_pcell = ly.create_cell(seven, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": AO})
+                                array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
+                                text_param_list.append([device_id, seven, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, AO])
+                                device_id +=1
+                                
     wr.writerows(text_param_list)
