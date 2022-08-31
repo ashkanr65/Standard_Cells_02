@@ -61,9 +61,9 @@ with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', '
                             i = 0
                         elif (i<x):
                             i +=1
-                        sub_pcell = ly.create_cell(ones, "STD_Cell_V2", { "pad": 1,"n_d": n_f })
+                        sub_pcell = ly.create_cell(ones, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "name": "1_"+"%03d"%device_id })
                         array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                        text_param_list.append([device_id, ones, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, 'NULL'])
+                        text_param_list.append(["1_"+"%03d"%device_id, ones, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, 'NULL'])
                         device_id +=1
                         
         for n_f in inverter_id_params["n_f"]:
@@ -86,9 +86,9 @@ with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', '
                                         i = 0
                                     elif (i<x):
                                         i +=1
-                                    sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel": TF})
+                                    sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel": TF, "name": "1_"+"%03d"%device_id})
                                     array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                    text_param_list.append([device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
+                                    text_param_list.append(["1_"+"%03d"%device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
                                     device_id +=1
                                     
                                 else:
@@ -99,9 +99,9 @@ with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', '
                                         i = 0
                                     elif (i<x):
                                         i +=1
-                                    sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "q": TF})
+                                    sub_pcell = ly.create_cell(twos, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "q": TF, "name": "1_"+"%03d"%device_id})
                                     array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                    text_param_list.append([device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
+                                    text_param_list.append(["1_"+"%03d"%device_id, twos, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, TF])
                                     device_id +=1
                                     
         for n_f in inverter_id_params["n_f"]:
@@ -123,9 +123,9 @@ with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', '
                                     i = 0
                                 elif (i<x):
                                     i +=1
-                                sub_pcell = ly.create_cell(fours, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": M4})
+                                sub_pcell = ly.create_cell(fours, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": M4, "name": "1_"+"%03d"%device_id})
                                 array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                text_param_list.append([device_id, fours, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, M4])
+                                text_param_list.append(["1_"+"%03d"%device_id, fours, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, M4])
                                 device_id +=1
                                 
 
@@ -148,9 +148,9 @@ with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', '
                                     i = 0
                                 elif (i<x):
                                     i +=1
-                                sub_pcell = ly.create_cell("MUX_4_V2", "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel0": s0, "sel1": s1})
+                                sub_pcell = ly.create_cell("MUX_4_V2", "STD_Cell_V2", { "pad": 1,"n_d": n_f, "sel0": s0, "sel1": s1, "name": "1_"+"%03d"%device_id})
                                 array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                text_param_list.append([device_id, "MUX_4_V2", i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, (s0,s1)])
+                                text_param_list.append(["1_"+"%03d"%device_id, "MUX_4_V2", i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, (s0,s1)])
                                 device_id +=1
                                 
         for seven in inverter_id_params["seven_positions"]:
@@ -172,9 +172,9 @@ with open(path+'\SmartKem\STD_Cell_V2_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', '
                                     i = 0
                                 elif (i<x):
                                     i +=1
-                                sub_pcell = ly.create_cell(seven, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": AO})
+                                sub_pcell = ly.create_cell(seven, "STD_Cell_V2", { "pad": 1,"n_d": n_f, "AO": AO, "name": "1_"+"%03d"%device_id})
                                 array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                text_param_list.append([device_id, seven, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, AO])
+                                text_param_list.append(["1_"+"%03d"%device_id, seven, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, AO])
                                 device_id +=1
                                 
     wr.writerows(text_param_list)

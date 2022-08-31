@@ -33,6 +33,7 @@ class MUX_4_V2(pya.PCellDeclarationHelper):
     self.param("pad", self.TypeBoolean, "Pads", default = False)
     self.param("sel0", self.TypeBoolean, "S0 input", default = False)
     self.param("sel1", self.TypeBoolean, "S1 input", default = False)
+    self.param("name", self.TypeString, "name", default = "1_001")
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -1141,6 +1142,18 @@ class MUX_4_V2(pya.PCellDeclarationHelper):
             pya.Point((x21-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)
         self.cell.shapes(gc).insert(vout)
+
+        #name
+        name = pya.TextGenerator.default_generator().text\
+            ("MUX4", 0.001, 35).move(-300/dbu, -150 / dbu)
+        self.cell.shapes(gc).insert(name)
+        self.cell.shapes(sd).insert(name)
+        self.cell.shapes(bm).insert(name)
+        name = pya.TextGenerator.default_generator().text\
+            (self.name, 0.001, 35).move(-300/dbu, -180 / dbu)
+        self.cell.shapes(gc).insert(name)
+        self.cell.shapes(sd).insert(name)
+        self.cell.shapes(bm).insert(name)
     
     else:
         # S0 Input

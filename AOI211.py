@@ -33,6 +33,7 @@ class AOI211_v2(pya.PCellDeclarationHelper):
     self.param("PDN_S", self.TypeDouble, "Extra distance for PDN", default = 0)
     self.param("pad", self.TypeBoolean, "Pads", default = False)
     self.param("AO", self.TypeList, "Always on input", default = ['0', '0', '1', '1'])
+    self.param("name", self.TypeString, "name", default = "1_001")
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -889,6 +890,18 @@ class AOI211_v2(pya.PCellDeclarationHelper):
             pya.Point((x4-gate_edge + (via + ov)/2)/dbu, Top_Edge),
         ],path_width_dbu)
         self.cell.shapes(gc).insert(vout)
+
+        #name
+        name = pya.TextGenerator.default_generator().text\
+            ("AOI211", 0.001, 35).move(-300/dbu, -150 / dbu)
+        self.cell.shapes(gc).insert(name)
+        self.cell.shapes(sd).insert(name)
+        self.cell.shapes(bm).insert(name)
+        name = pya.TextGenerator.default_generator().text\
+            (self.name, 0.001, 35).move(-300/dbu, -180 / dbu)
+        self.cell.shapes(gc).insert(name)
+        self.cell.shapes(sd).insert(name)
+        self.cell.shapes(bm).insert(name)
 
   def produce_impl(self):
     

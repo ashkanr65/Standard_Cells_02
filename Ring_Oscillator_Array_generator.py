@@ -60,8 +60,8 @@ with open(path+'\SmartKem\Ring_Oscillator_'+time.strftime("%Y%m%d-%H%M%S")+'.csv
                                     i = 0
                                 elif (i<x):
                                     i +=1
-                                sub_pcell = ly.create_cell(rings, rings, { "pad": 1,"n_d": n_f, "buffer": buff })
+                                sub_pcell = ly.create_cell(rings, rings, { "pad": 1,"n_d": n_f, "buffer": buff , "name": "1_"+"%03d"%device_id})
                                 array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
-                                text_param_list.append([device_id, rings, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, buff])
+                                text_param_list.append(["1_"+"%03d"%device_id, rings, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f, buff])
                                 device_id +=1
     wr.writerows(text_param_list)
