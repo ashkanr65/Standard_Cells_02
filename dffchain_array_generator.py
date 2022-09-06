@@ -56,7 +56,7 @@ with open(path+'\SmartKem\dffchain_'+time.strftime("%Y%m%d-%H%M%S")+'.csv', 'w',
                             i = 0
                         elif (i<x):
                             i +=1
-                        sub_pcell = ly.create_cell(dffchain, dffchain, { "pad": 1,"n_d": n_f, "name": "1_"+"%03d"%device_id})
+                        sub_pcell = ly.create_cell(dffchain, dffchain, { "pad": 1,"n_d": n_f, "name": "1_"+"%03d"%device_id, "s": 2.5, "via": 2.5, "o": 2.5})
                         array_cell.insert(pya.CellInstArray(sub_pcell.cell_index(), pya.DTrans(i*x_dis/ly.dbu, j*y_dis/ly.dbu)))
                         text_param_list.append(["1_"+"%03d"%device_id, dffchain, i*x_dis, j*y_dis, 90*n_f, 2.5, n_f])
                         device_id +=1
