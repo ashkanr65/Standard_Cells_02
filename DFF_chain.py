@@ -24,7 +24,7 @@ class DFF_chain(pya.PCellDeclarationHelper):
     self.param("l_d", self.TypeDouble, "Drive Length", default = 2.5)
     self.param("l_l", self.TypeDouble, "Load Length", default = 2.5)
     self.param("r", self.TypeDouble, "Ratio", default = 1)
-    self.param("o", self.TypeDouble, "Gate Overlap", default = 2.5)
+    self.param("o", self.TypeDouble, "Gate Overlap", default = 5)
     self.param("fw", self.TypeDouble, "Finger Width", default = 3.5)
     self.param("s", self.TypeDouble, "Finger Separation", default = 2.5)
     self.param("via", self.TypeDouble, "via size", default = 2.5)
@@ -243,7 +243,7 @@ class DFF_chain(pya.PCellDeclarationHelper):
     ov_r = ov_r / dbu
     gate_overlap = self.o / dbu
     n = n_i
-    bg_ov = gate_overlap
+    bg_ov = gate_overlap/2
     channel_length = l_i / dbu
     finger_width = self.fw / dbu
     channel_width_per_f = w_i / dbu
@@ -562,9 +562,9 @@ class DFF_chain(pya.PCellDeclarationHelper):
                       posy + source_drain_region.bbox().right - finger_width),\
             pya.Point(x/dbu - gate_region.bbox().top-EL_W,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap/2 - finger_width ,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap/2 - finger_width ,\
                       posy + source_drain_region.bbox().left + finger_width),\
             pya.Point(x/dbu - gate_region.bbox().top-2*EL_W,\
                       posy + source_drain_region.bbox().left + finger_width),\
@@ -663,8 +663,8 @@ class DFF_chain(pya.PCellDeclarationHelper):
     d_x_111 = ((-2*x0) + 2*finger_sep) / 5
 
     l_x = (((p*self.n_d*self.l_l)+(p*self.n_d+1)*finger_width)/2 -x0\
-        + 3*ov +2*via)/5
-    Top_Path = (w_d/2 + self.o + 2*self.s + finger_width - path_width/2)/dbu #Top edge of Cell
+        + 2.5*ov +2*via)/5
+    Top_Path = (w_d/2 + ov + 2*self.s + finger_width - path_width/2)/dbu #Top edge of Cell
     # third_path = Top_Path / 3 
     third_path = y/dbu + path_width_dbu/2 + 3*ov_dbu/2 + via/2/dbu
     gate_connection = (w_d/2 - path_width/2)/dbu #Top gate of Cell
@@ -691,7 +691,7 @@ class DFF_chain(pya.PCellDeclarationHelper):
         Bottom_Edge = (y-(w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S))/dbu #Bottom edge of Cell
         #CHAIN 1
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-        tr_n=38
+        tr_n=41
         xp=x0-(self.n_d*tr_n*(finger_width+self.l_d)/2)
         self.transistor(0, xp, y, w_d, self.n_d, self.l_d, True, False, 0, 0, 0, 0)
         #gates name
@@ -1154,8 +1154,8 @@ class DFF_chain(pya.PCellDeclarationHelper):
         self.cell.shapes(gc).insert(interconnect)
 
         # D Input
-        Input = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
-            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
+        Input = pya.Path([pya.Point((x4-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
+            pya.Point((x4-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
             ],path_width_dbu)
         self.cell.shapes(gc).insert(Input)
 
@@ -1310,8 +1310,8 @@ class DFF_chain(pya.PCellDeclarationHelper):
         if (y<400):
             interconnect = pya.Path([pya.Point((x43-gate_edge + (via + ov)/2)/dbu,y/dbu+gate_connection),
                 pya.Point((x43-gate_edge + (via + ov)/2)/dbu,y/dbu+gate_connection + 32.5/dbu),
-                pya.Point((x1-gate_edge + (via + ov)/2)/dbu,y/dbu+gate_connection + 32.5/dbu),
-                pya.Point((x1-gate_edge + (via + ov)/2)/dbu,y/dbu+gate_connection + 65/dbu),
+                pya.Point((x4-gate_edge + (via + ov)/2)/dbu,y/dbu+gate_connection + 32.5/dbu),
+                pya.Point((x4-gate_edge + (via + ov)/2)/dbu,y/dbu+gate_connection + 65/dbu),
                 ],path_width_dbu)
             self.cell.shapes(gc).insert(interconnect)
 
@@ -1324,7 +1324,7 @@ class DFF_chain(pya.PCellDeclarationHelper):
     # Pads
     if(self.pad):
         
-        list_a = [-450, 307.5, 1065]
+        list_a = [-455, 307.5, 1070]
         list_b = [-200, k+200]
         for i in list_a:
             for j in list_b:
@@ -1431,8 +1431,8 @@ class DFF_chain(pya.PCellDeclarationHelper):
         vin2 = pya.Path([
             pya.Point((list_a[1])/dbu, (list_b[0])/dbu),
             pya.Point((list_a[1])/dbu, gate_in),
-            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, gate_in),
-            pya.Point((x1-gate_edge + (via + ov)/2)/dbu, Bottom_Edge - y/dbu),
+            pya.Point((x4-gate_edge + (via + ov)/2)/dbu, gate_in),
+            pya.Point((x4-gate_edge + (via + ov)/2)/dbu, Bottom_Edge - y/dbu),
         ],path_width_dbu)
         self.cell.shapes(gc).insert(vin2)
 

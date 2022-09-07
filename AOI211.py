@@ -25,7 +25,7 @@ class AOI211_v2(pya.PCellDeclarationHelper):
     self.param("l_d", self.TypeDouble, "Drive Length", default = 2.5)
     self.param("l_l", self.TypeDouble, "Load Length", default = 2.5)
     self.param("r", self.TypeDouble, "Ratio", default = 1)
-    self.param("o", self.TypeDouble, "Gate Overlap", default = 2.5)
+    self.param("o", self.TypeDouble, "Gate Overlap", default = 5)
     self.param("fw", self.TypeDouble, "Finger Width", default = 3.5)
     self.param("s", self.TypeDouble, "Finger Separation", default = 2.5)
     self.param("via", self.TypeDouble, "via size", default = 2.5)
@@ -245,7 +245,7 @@ class AOI211_v2(pya.PCellDeclarationHelper):
     ov_r = ov_r / dbu
     gate_overlap = self.o / dbu
     n = n_i
-    bg_ov = gate_overlap
+    bg_ov = gate_overlap/2
     channel_length = l_i / dbu
     finger_width = self.fw / dbu
     channel_width_per_f = w_i / dbu
@@ -564,9 +564,9 @@ class AOI211_v2(pya.PCellDeclarationHelper):
                       posy + source_drain_region.bbox().right - finger_width),\
             pya.Point(x/dbu - gate_region.bbox().top-EL_W,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap/2 - finger_width ,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap/2 - finger_width ,\
                       posy + source_drain_region.bbox().left + finger_width),\
             pya.Point(x/dbu - gate_region.bbox().top-2*EL_W,\
                       posy + source_drain_region.bbox().left + finger_width),\
@@ -668,8 +668,8 @@ class AOI211_v2(pya.PCellDeclarationHelper):
     d_x_111 = ((-2*x0) + 2*finger_sep) / 5
 
     l_x = (((p*self.n_d*self.l_l)+(p*self.n_d+1)*finger_width)/2 -x0\
-        + 3*ov +2*via)/5
-    Top_Path = (w_d/2 + self.o + 2*self.s + finger_width - path_width/2)/dbu #Top edge of Cell
+        + 2.5*ov +2*via)/5
+    Top_Path = (w_d/2 + ov + 2*self.s + finger_width - path_width/2)/dbu #Top edge of Cell
     # third_path = Top_Path / 3 
     third_path = y/dbu + path_width_dbu/2 + 3*ov_dbu/2 + via/2/dbu
     gate_connection = (w_d/2 - path_width/2)/dbu #Top gate of Cell
