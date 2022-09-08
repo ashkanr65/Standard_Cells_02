@@ -455,15 +455,15 @@ class Ring_Inv(pya.PCellDeclarationHelper):
       
     #Positions
     if (level == 0):
-        vdd0 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - gate_overlap\
+        vdd0 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - finger_sep\
             , posx + drain_backbone_region.bbox().top, VDD_T_E))
         self.cell.shapes(sd).insert(vdd0)
     if (level == 1):
-        vdd1 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - gate_overlap\
+        vdd1 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - finger_sep\
             , posx + drain_backbone_region.bbox().top, VDD_T_E))
         self.cell.shapes(sd).insert(vdd1)
     if (level == 3):
-        vss = pya.Region(pya.Box(posx - source_backbone_region.bbox().bottom, VSS_T_E + gate_overlap\
+        vss = pya.Region(pya.Box(posx - source_backbone_region.bbox().bottom, VSS_T_E + finger_sep\
             , posx - source_backbone_region.bbox().top, VSS_B_E))
         self.cell.shapes(sd).insert(vss)
         
@@ -786,7 +786,7 @@ class Ring_Inv(pya.PCellDeclarationHelper):
         d_x_buffer_0 = ((-x0_buffer-x0) + 2*finger_sep + finger_width) / 5
         d_x_101_buffer = ((-2*x0_buffer) + 2*finger_sep + finger_width) / 5
         l_x_buffer = (((rt*p*self.n_d*self.l_l)+(rt*p*self.n_d+1)*finger_width)/2 -x0_buffer\
-            + 3*ov +2*via)/5
+            + 2.5*ov +2*via)/5
         gate_edge_buffer = ((rt*self.n_d)*self.l_d+(rt*self.n_d+1)*finger_width)/2
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)10

@@ -866,7 +866,7 @@ class Ring_AOI21(pya.PCellDeclarationHelper):
         d_x_buffer_0 = ((-x0_buffer-x0) + 2*finger_sep + finger_width) / 5
         d_x_101_buffer = ((-2*x0_buffer) + 2*finger_sep + finger_width) / 5
         l_x_buffer = (((rt*p*self.n_d*self.l_l)+(rt*p*self.n_d+1)*finger_width)/2 -x0_buffer\
-            + 3*ov +2*via)/5
+            + 2.5*ov +2*via)/5
         gate_edge_buffer = ((rt*self.n_d)*self.l_d+(rt*self.n_d+1)*finger_width)/2
 
         # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)20
