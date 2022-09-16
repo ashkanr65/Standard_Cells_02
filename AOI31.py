@@ -584,9 +584,9 @@ class AOI31_v2(pya.PCellDeclarationHelper):
                       posy + source_drain_region.bbox().right - finger_width),\
             pya.Point(x/dbu - source_drain_region.bbox().top - finger_sep,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - gate_overlap - finger_width,\
+            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - 2*finger_width,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - gate_overlap - finger_width,\
+            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - 2*finger_width,\
                       posy + source_drain_region.bbox().left + finger_width),\
             pya.Point(x/dbu - source_drain_region.bbox().top - finger_sep -finger_width,\
                       posy + source_drain_region.bbox().left + finger_width),\
@@ -861,10 +861,9 @@ class AOI31_v2(pya.PCellDeclarationHelper):
                         ],path_width_dbu)
                         self.cell.shapes(gc).insert(vin2)
                         # via connection
-                        z_via = pya.Path([
-                            pya.Point((X[in00]-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
-                            pya.Point((X[in00]-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
-                        ],via/dbu)
+                        z_via = pya.Region(pya.Box((X[in00]-gate_edge + ov/2)/dbu, Bottom_rail + via/2/dbu,\
+                            (X[in00]-gate_edge + (ov+2*via)/2)/dbu, Bottom_rail - via/2/dbu))
+                        z_via = z_via.round_corners(via/dbu, via/dbu, 128)
                         self.cell.shapes(pv).insert(z_via)
                         flag0 = True
                     else:
@@ -874,10 +873,9 @@ class AOI31_v2(pya.PCellDeclarationHelper):
                         ],path_width_dbu)
                         self.cell.shapes(gc).insert(vin2)
                         # via connection
-                        z_via = pya.Path([
-                            pya.Point((X[in01]-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
-                            pya.Point((X[in01]-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
-                        ],via/dbu)
+                        z_via = pya.Region(pya.Box((X[in01]-gate_edge + ov/2)/dbu, Bottom_rail + via/2/dbu,\
+                            (X[in01]-gate_edge + (ov+2*via)/2)/dbu, Bottom_rail - via/2/dbu))
+                        z_via = z_via.round_corners(via/dbu, via/dbu, 128)
                         self.cell.shapes(pv).insert(z_via)
 
         # Vout connection

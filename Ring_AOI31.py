@@ -454,15 +454,15 @@ class Ring_AOI31(pya.PCellDeclarationHelper):
       
     #Positions
     if (level == 0):
-        vdd0 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - gate_overlap\
+        vdd0 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - finger_sep\
             , posx + drain_backbone_region.bbox().top, VDD_T_E))
         self.cell.shapes(sd).insert(vdd0)
     if (level == 1):
-        vdd1 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - gate_overlap\
+        vdd1 = pya.Region(pya.Box(posx - drain_backbone_region.bbox().top, VDD_B_E - finger_sep\
             , posx + drain_backbone_region.bbox().top, VDD_T_E))
         self.cell.shapes(sd).insert(vdd1)
     if (level == 3):
-        vss = pya.Region(pya.Box(posx - source_backbone_region.bbox().bottom, VSS_T_E + gate_overlap\
+        vss = pya.Region(pya.Box(posx - source_backbone_region.bbox().bottom, VSS_T_E + finger_sep\
             , posx - source_backbone_region.bbox().top, VSS_B_E))
         self.cell.shapes(sd).insert(vss)
         
@@ -584,9 +584,9 @@ class Ring_AOI31(pya.PCellDeclarationHelper):
                       posy + source_drain_region.bbox().right - finger_width),\
             pya.Point(x/dbu - source_drain_region.bbox().top - finger_sep,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - gate_overlap - finger_width,\
+            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - 2*finger_width,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - gate_overlap - finger_width,\
+            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - 2*finger_width,\
                       posy + source_drain_region.bbox().left + finger_width),\
             pya.Point(x/dbu - source_drain_region.bbox().top - finger_sep -finger_width,\
                       posy + source_drain_region.bbox().left + finger_width),\

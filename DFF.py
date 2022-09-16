@@ -584,9 +584,9 @@ class DFF_V2(pya.PCellDeclarationHelper):
                       posy + source_drain_region.bbox().right - finger_width),\
             pya.Point(x/dbu - source_drain_region.bbox().top - finger_sep,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - gate_overlap - finger_width,\
+            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - 2*finger_width,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - gate_overlap - finger_width,\
+            pya.Point(x/dbu - source_drain_region.bbox().top - 2*finger_sep - 2*finger_width,\
                       posy + source_drain_region.bbox().left + finger_width),\
             pya.Point(x/dbu - source_drain_region.bbox().top - finger_sep -finger_width,\
                       posy + source_drain_region.bbox().left + finger_width),\
