@@ -786,10 +786,9 @@ class NAND3_v2(pya.PCellDeclarationHelper):
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vin1)
             # via connection
-            z_via = pya.Path([
-                pya.Point((xp-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
-                pya.Point((xp-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
-            ],via/dbu)
+            z_via = pya.Region(pya.Box((xp-gate_edge + ov/2)/dbu, Bottom_rail + via/2/dbu,\
+                (xp-gate_edge + (ov+2*via)/2)/dbu, Bottom_rail - via/2/dbu))
+            z_via = z_via.round_corners(via/dbu, via/dbu, 128)
             self.cell.shapes(pv).insert(z_via)
 
             # Vin2 connection
@@ -828,10 +827,9 @@ class NAND3_v2(pya.PCellDeclarationHelper):
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vin2)
             # via connection
-            z_via = pya.Path([
-                pya.Point((x1-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
-                pya.Point((x1-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
-            ],via/dbu)
+            z_via = pya.Region(pya.Box((x1-gate_edge + ov/2)/dbu, Bottom_rail + via/2/dbu,\
+                (x1-gate_edge + (ov+2*via)/2)/dbu, Bottom_rail - via/2/dbu))
+            z_via = z_via.round_corners(via/dbu, via/dbu, 128)
             self.cell.shapes(pv).insert(z_via)
 
             # Vin3 connection
@@ -871,10 +869,9 @@ class NAND3_v2(pya.PCellDeclarationHelper):
             ],path_width_dbu)
             self.cell.shapes(gc).insert(vin3)
             # via connection
-            z_via = pya.Path([
-                pya.Point((x2-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
-                pya.Point((x2-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
-            ],via/dbu)
+            z_via = pya.Region(pya.Box((x2-gate_edge + ov/2)/dbu, Bottom_rail + via/2/dbu,\
+                (x2-gate_edge + (ov+2*via)/2)/dbu, Bottom_rail - via/2/dbu))
+            z_via = z_via.round_corners(via/dbu, via/dbu, 128)
             self.cell.shapes(pv).insert(z_via)
 
         if(self.AO == 3):

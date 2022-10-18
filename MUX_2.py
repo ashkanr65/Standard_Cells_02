@@ -899,10 +899,9 @@ class MUX_2_V2(pya.PCellDeclarationHelper):
             ],path_width_dbu)
             self.cell.shapes(gc).insert(sel)
             # via connection
-            z_via = pya.Path([
-                pya.Point((x3-gate_edge + (2*ov)/2)/dbu, Bottom_Edge - ov_dbu),
-                pya.Point((x3-gate_edge + (2*ov)/2)/dbu, Bottom_rail + ov_dbu - self.rail*finger_width_dbu/2),
-            ],via/dbu)
+            z_via = pya.Region(pya.Box((x3-gate_edge + ov/2)/dbu, Bottom_rail + via/2/dbu,\
+                (x3-gate_edge + (ov+2*via)/2)/dbu, Bottom_rail - via/2/dbu))
+            z_via = z_via.round_corners(via/dbu, via/dbu, 128)
             self.cell.shapes(pv).insert(z_via)
         else:
             # S Input
@@ -917,10 +916,9 @@ class MUX_2_V2(pya.PCellDeclarationHelper):
             ],path_width_dbu)
             self.cell.shapes(gc).insert(sel)
             # via connection
-            z_via = pya.Path([
-                pya.Point((x3-gate_edge + (2*ov)/2)/dbu, Top_Edge + ov_dbu),
-                pya.Point((x3-gate_edge + (2*ov)/2)/dbu, Top_rail - ov_dbu + self.rail*finger_width_dbu/2),
-            ],via/dbu)
+            z_via = pya.Region(pya.Box((x3-gate_edge + ov/2)/dbu, Top_rail + via/2/dbu,\
+                (x3-gate_edge + (ov+2*via)/2)/dbu, Top_rail - via/2/dbu))
+            z_via = z_via.round_corners(via/dbu, via/dbu, 128)
             self.cell.shapes(pv).insert(z_via)
 
         # Vout connection
