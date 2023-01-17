@@ -488,23 +488,23 @@ class MUX_4_V2(pya.PCellDeclarationHelper):
     #Source to Gate
     if (Int_Con == 1 and out != 1):
         D1_D2 = pya.Polygon([
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap ,\
-                      posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap+EL_W),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap,\
+            pya.Point(x/dbu - gate_region.bbox().top - bg_ov,\
+                      posy + source_drain_region.bbox().left + finger_width + finger_sep + bg_ov+EL_W),\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left + finger_width),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap-EL_W,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov-EL_W,\
                       posy + source_drain_region.bbox().left + finger_width),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap-EL_W,\
-                      posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap+EL_W),\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov-EL_W,\
+                      posy + source_drain_region.bbox().left + finger_width + finger_sep + bg_ov+EL_W),\
             ])
         self.cell.shapes(sd).insert(D1_D2)
 
         #via connection
-        PV_Region_sq = pya.Region(pya.Box(gate_region.bbox().left, gate_region.bbox().top+gate_overlap,\
+        PV_Region_sq = pya.Region(pya.Box(gate_region.bbox().left, gate_region.bbox().top+bg_ov,\
             gate_region.bbox().left+EL_W, gate_region.bbox().top))
         self.cell.shapes(gc).insert(PV_Region_sq, rotation)
 
@@ -520,23 +520,23 @@ class MUX_4_V2(pya.PCellDeclarationHelper):
 
     if (Int_Con == 1 and out != 0):
         D1_D2 = pya.Polygon([
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap ,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov ,\
                       posy + source_drain_region.bbox().right - (finger_width + finger_sep + gate_overlap)),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left + finger_width),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap-EL_W,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov-EL_W,\
                       posy + source_drain_region.bbox().left + finger_width),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap-EL_W,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov-EL_W,\
                       posy + source_drain_region.bbox().right - (finger_width + finger_sep + gate_overlap)),\
             ])
         self.cell.shapes(sd).insert(D1_D2)
 
         #via connection
-        PV_Region_sq = pya.Region(pya.Box(gate_region.bbox().right, gate_region.bbox().top+gate_overlap,\
+        PV_Region_sq = pya.Region(pya.Box(gate_region.bbox().right, gate_region.bbox().top+bg_ov,\
             gate_region.bbox().right-EL_W, gate_region.bbox().top))
         self.cell.shapes(gc).insert(PV_Region_sq, rotation)
 
