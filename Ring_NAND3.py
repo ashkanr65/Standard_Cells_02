@@ -563,9 +563,9 @@ class Ring_NAND3(pya.PCellDeclarationHelper):
                       posy + source_drain_region.bbox().right - finger_width),\
             pya.Point(x/dbu - gate_region.bbox().top-EL_W,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap/2 - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap/2 - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left + finger_width),\
             pya.Point(x/dbu - gate_region.bbox().top-2*EL_W,\
                       posy + source_drain_region.bbox().left + finger_width),\
@@ -622,6 +622,37 @@ class Ring_NAND3(pya.PCellDeclarationHelper):
             x/dbu - source_drain_region.bbox().top - 2*gate_overlap - 2*finger_width - channel_length, posy + \
             source_drain_region.bbox().right - finger_width))
         self.cell.shapes(sd).insert(D1_D2)
+
+    #Drain Input
+    if (Int_Con == 999):
+        D_In = pya.Polygon([
+            pya.Point(x/dbu, posy + source_drain_region.bbox().right),\
+            pya.Point(x/dbu - gate_region.bbox().top -EL_W - bg_ov,\
+                      posy + source_drain_region.bbox().right),\
+            pya.Point(x/dbu - gate_region.bbox().top -EL_W - bg_ov,\
+                      posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap),\
+            pya.Point(x/dbu - gate_region.bbox().top - bg_ov,\
+                      posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap),\
+            pya.Point(x/dbu - gate_region.bbox().top - bg_ov,\
+                      posy + source_drain_region.bbox().right - finger_width),\
+            pya.Point(x/dbu,\
+                      posy + source_drain_region.bbox().right - finger_width)\
+            ])
+        self.cell.shapes(sd).insert(D_In)
+
+        #via connection
+        PV_Region_sq = pya.Region(pya.Box(x/dbu - gate_region.bbox().top -EL_W - bg_ov\
+            , posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap,\
+            x/dbu - gate_region.bbox().top - bg_ov\
+            , posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap + EL_W))
+        self.cell.shapes(gc).insert(PV_Region_sq)
+        self.cell.shapes(sd).insert(PV_Region_sq)
+
+        #Output via
+        PV_Region = pya.Region(pya.Box(PV_Region_sq.bbox().left + In_Box, PV_Region_sq.bbox().bottom + In_Box,\
+            PV_Region_sq.bbox().right - In_Box, PV_Region_sq.bbox().top - In_Box))       
+        PV_Region = PV_Region.round_corners(PV_BOX, PV_BOX, nr)
+        self.cell.shapes(pv).insert(PV_Region)
         
   def impl(self):
     #Definitions
@@ -684,6 +715,7 @@ class Ring_NAND3(pya.PCellDeclarationHelper):
         # 101: Source to Drain
         # 110: Drain to Source
         # 111: Drain to Drain
+        # 999: Drain Input
     #If out = 0, the via of the transistors are down
     #If out = 1, the via of the transistors are up
     #Ring_1

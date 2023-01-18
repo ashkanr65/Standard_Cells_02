@@ -487,23 +487,23 @@ class SRAM_6T(pya.PCellDeclarationHelper):
     #Source to Gate
     if (Int_Con == 1 and out != 1):
         D1_D2 = pya.Polygon([
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap ,\
-                      posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap+EL_W),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap,\
+            pya.Point(x/dbu - gate_region.bbox().top - bg_ov,\
+                      posy + source_drain_region.bbox().left + finger_width + finger_sep + bg_ov+EL_W),\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left + finger_width),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap-EL_W,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov-EL_W,\
                       posy + source_drain_region.bbox().left + finger_width),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap-EL_W,\
-                      posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap+EL_W),\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov-EL_W,\
+                      posy + source_drain_region.bbox().left + finger_width + finger_sep + bg_ov+EL_W),\
             ])
         self.cell.shapes(sd).insert(D1_D2)
 
         #via connection
-        PV_Region_sq = pya.Region(pya.Box(gate_region.bbox().left, gate_region.bbox().top+gate_overlap,\
+        PV_Region_sq = pya.Region(pya.Box(gate_region.bbox().left, gate_region.bbox().top+bg_ov,\
             gate_region.bbox().left+EL_W, gate_region.bbox().top))
         self.cell.shapes(gc).insert(PV_Region_sq, rotation)
 
@@ -519,23 +519,23 @@ class SRAM_6T(pya.PCellDeclarationHelper):
 
     if (Int_Con == 1 and out != 0):
         D1_D2 = pya.Polygon([
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap ,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov ,\
                       posy + source_drain_region.bbox().right - (finger_width + finger_sep + gate_overlap)),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left + finger_width),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap-EL_W,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov-EL_W,\
                       posy + source_drain_region.bbox().left + finger_width),\
-            pya.Point(x/dbu - gate_region.bbox().top-gate_overlap-EL_W,\
+            pya.Point(x/dbu - gate_region.bbox().top-bg_ov-EL_W,\
                       posy + source_drain_region.bbox().right - (finger_width + finger_sep + gate_overlap)),\
             ])
         self.cell.shapes(sd).insert(D1_D2)
 
         #via connection
-        PV_Region_sq = pya.Region(pya.Box(gate_region.bbox().right, gate_region.bbox().top+gate_overlap,\
+        PV_Region_sq = pya.Region(pya.Box(gate_region.bbox().right, gate_region.bbox().top+bg_ov,\
             gate_region.bbox().right-EL_W, gate_region.bbox().top))
         self.cell.shapes(gc).insert(PV_Region_sq, rotation)
 
@@ -563,9 +563,9 @@ class SRAM_6T(pya.PCellDeclarationHelper):
                       posy + source_drain_region.bbox().right - finger_width),\
             pya.Point(x/dbu - gate_region.bbox().top-EL_W,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap/2 - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left),\
-            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - gate_overlap/2 - finger_width ,\
+            pya.Point(x/dbu - gate_region.bbox().top-2*EL_W - bg_ov - finger_width ,\
                       posy + source_drain_region.bbox().left + finger_width),\
             pya.Point(x/dbu - gate_region.bbox().top-2*EL_W,\
                       posy + source_drain_region.bbox().left + finger_width),\
@@ -622,6 +622,37 @@ class SRAM_6T(pya.PCellDeclarationHelper):
             x/dbu - source_drain_region.bbox().top - 2*gate_overlap - 2*finger_width - channel_length, posy + \
             source_drain_region.bbox().right - finger_width))
         self.cell.shapes(sd).insert(D1_D2)
+
+    #Drain Input
+    if (Int_Con == 999):
+        D_In = pya.Polygon([
+            pya.Point(x/dbu, posy + source_drain_region.bbox().right),\
+            pya.Point(x/dbu - gate_region.bbox().top -EL_W - bg_ov,\
+                      posy + source_drain_region.bbox().right),\
+            pya.Point(x/dbu - gate_region.bbox().top -EL_W - bg_ov,\
+                      posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap),\
+            pya.Point(x/dbu - gate_region.bbox().top - bg_ov,\
+                      posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap),\
+            pya.Point(x/dbu - gate_region.bbox().top - bg_ov,\
+                      posy + source_drain_region.bbox().right - finger_width),\
+            pya.Point(x/dbu,\
+                      posy + source_drain_region.bbox().right - finger_width)\
+            ])
+        self.cell.shapes(sd).insert(D_In)
+
+        #via connection
+        PV_Region_sq = pya.Region(pya.Box(x/dbu - gate_region.bbox().top -EL_W - bg_ov\
+            , posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap,\
+            x/dbu - gate_region.bbox().top - bg_ov\
+            , posy + source_drain_region.bbox().left + finger_width + finger_sep + gate_overlap + EL_W))
+        self.cell.shapes(gc).insert(PV_Region_sq)
+        self.cell.shapes(sd).insert(PV_Region_sq)
+
+        #Output via
+        PV_Region = pya.Region(pya.Box(PV_Region_sq.bbox().left + In_Box, PV_Region_sq.bbox().bottom + In_Box,\
+            PV_Region_sq.bbox().right - In_Box, PV_Region_sq.bbox().top - In_Box))       
+        PV_Region = PV_Region.round_corners(PV_BOX, PV_BOX, nr)
+        self.cell.shapes(pv).insert(PV_Region)
         
   def impl(self):
     #Definitions
@@ -684,12 +715,13 @@ class SRAM_6T(pya.PCellDeclarationHelper):
         # 101: Source to Drain
         # 110: Drain to Source
         # 111: Drain to Drain
+        # 999: Drain Input
     #If out = 0, the via of the transistors are down
     #If out = 1, the via of the transistors are up
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
     tr_n=6
     xp=x0-(self.n_d*tr_n*(finger_width+self.l_d)/2)
-    self.transistor(1, xp, y, w_d, self.n_d, self.l_d, True, False, 1, 0, 0, 0)
+    self.transistor(2, xp, y, w_d, self.n_d, self.l_d, True, False, 999, l_x+d_x_0, d_x_1, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
         ("I_NA0", 0.001, 5).move((xp- gate_edge)/ dbu, -Top_Path - 25 / dbu)
@@ -697,7 +729,7 @@ class SRAM_6T(pya.PCellDeclarationHelper):
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)1
     x1 = xp + 5*d_x_1
-    self.transistor(1, x1, y, w_d, self.n_d, self.l_d, True, False, 1, d_x_0, d_x_0, 0)
+    self.transistor(1, x1, y, w_d, self.n_d, self.l_d, True, False, 1, d_x_1, l_x, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
         ("I_NA1", 0.001, 5).move((x1- gate_edge)/ dbu, -Top_Path - 25 / dbu)
@@ -712,40 +744,61 @@ class SRAM_6T(pya.PCellDeclarationHelper):
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)3
-    x3 = x2 + 5*l_x
-    self.transistor(3, x3, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
+    x3 = x2 + 5*d_x_1
+    self.transistor(2, x3, y, w_d, self.n_d, self.l_d, True, False, 999, l_x, d_x_1, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("Out", 0.001, 5).move((x3 - gate_edge) / dbu, Top_Path + 20 / dbu)
+        ("I_NA1", 0.001, 5).move((x3- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
-
-
-
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)4
-    x4 = x3 + 5*l_x
-    self.transistor(1, x4, y, w_d, self.n_d, self.l_d, True, False, 100, d_x_0, d_x_0, 0)
+    x4 = x3 + 5*d_x_1
+    self.transistor(1, x4, y, w_d, self.n_d, self.l_d, True, False, 1, d_x_1, l_x, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I_NA1", 0.001, 5).move((x4- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("I_NO2", 0.001, 5).move((x4- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)5
-    x5 = x4 + 5*d_x_101
-    self.transistor(2, x5, y, w_d, self.n_d, self.l_d, True, False, 101, d_x_101, 2*d_x_101, 0)
+    x5 = x4 + 5*l_x
+    self.transistor(3, x5, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
         ("I_NO2", 0.001, 5).move((x5- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
+    # # X0 to X3 connection
+    # interconnect = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection),
+    #     pya.Point((x1-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection + path_step),
+    #     pya.Point((x5-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection + path_step),
+    #     pya.Point((x5-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection),
+    #     ],path_width_dbu)
+    # self.cell.shapes(gc).insert(interconnect)
 
-
-
-
-
-
-
+    # Xp to X3 connection
+    interconnect = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection),
+        pya.Point((xp-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection + path_step),
+        pya.Point((x3-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection + path_step),
+        pya.Point((x3-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection),
+        ],path_width_dbu)
+    self.cell.shapes(gc).insert(interconnect)
     
+    # X1 to X5 connection
+    interconnect = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, y/dbu+gate_connection),
+        pya.Point((x1-gate_edge + (via + ov)/2)/dbu, y/dbu+gate_connection - path_step),
+        pya.Point((x5-gate_edge + (via + ov)/2)/dbu, y/dbu+gate_connection - path_step),
+        pya.Point((x5-gate_edge + (via + ov)/2)/dbu, y/dbu+gate_connection),
+        ],path_width_dbu)
+    self.cell.shapes(gc).insert(interconnect)
+
+    # X2 to X4 connection
+    interconnect = pya.Path([pya.Point((x2-gate_edge + (via + ov)/2)/dbu, y/dbu+gate_connection),
+        pya.Point((x4-gate_edge + (via + ov)/2)/dbu, y/dbu+gate_connection),
+        ],path_width_dbu)
+    self.cell.shapes(gc).insert(interconnect)
+    
+    
+
     # # I0_nand Input
     # Input = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection ),
     #     pya.Point((xp-gate_edge + (via + ov)/2)/dbu, Bottom_Edge),
