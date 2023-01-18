@@ -724,7 +724,7 @@ class SRAM_6T(pya.PCellDeclarationHelper):
     self.transistor(2, xp, y, w_d, self.n_d, self.l_d, True, False, 999, l_x+d_x_0, d_x_1, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I_NA0", 0.001, 5).move((xp- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("T0", 0.001, 5).move((xp- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)1
@@ -732,7 +732,7 @@ class SRAM_6T(pya.PCellDeclarationHelper):
     self.transistor(1, x1, y, w_d, self.n_d, self.l_d, True, False, 1, d_x_1, l_x, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I_NA1", 0.001, 5).move((x1- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        (" T1", 0.001, 5).move((x1- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)2
@@ -740,7 +740,7 @@ class SRAM_6T(pya.PCellDeclarationHelper):
     self.transistor(3, x2, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I_NO2", 0.001, 5).move((x2- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("T2", 0.001, 5).move((x2- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)3
@@ -748,7 +748,7 @@ class SRAM_6T(pya.PCellDeclarationHelper):
     self.transistor(2, x3, y, w_d, self.n_d, self.l_d, True, False, 999, l_x, d_x_1, 0)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I_NA1", 0.001, 5).move((x3- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("T0B", 0.001, 5).move((x3- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)4
@@ -756,7 +756,7 @@ class SRAM_6T(pya.PCellDeclarationHelper):
     self.transistor(1, x4, y, w_d, self.n_d, self.l_d, True, False, 1, d_x_1, l_x, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I_NO2", 0.001, 5).move((x4- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("T1B", 0.001, 5).move((x4- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
 
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)5
@@ -764,16 +764,8 @@ class SRAM_6T(pya.PCellDeclarationHelper):
     self.transistor(3, x5, y, w_d, p * self.n_d, self.l_l, True, True, 101, l_x, 0, 1)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
-        ("I_NO2", 0.001, 5).move((x5- gate_edge)/ dbu, -Top_Path - 25 / dbu)
+        ("T2B", 0.001, 5).move((x5- gate_edge)/ dbu, -Top_Path - 25 / dbu)
     self.cell.shapes(txt).insert(iTregion)
-
-    # # X0 to X3 connection
-    # interconnect = pya.Path([pya.Point((x1-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection),
-    #     pya.Point((x1-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection + path_step),
-    #     pya.Point((x5-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection + path_step),
-    #     pya.Point((x5-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection),
-    #     ],path_width_dbu)
-    # self.cell.shapes(gc).insert(interconnect)
 
     # Xp to X3 connection
     interconnect = pya.Path([pya.Point((xp-gate_edge + (via + ov)/2)/dbu, y/dbu-gate_connection),
