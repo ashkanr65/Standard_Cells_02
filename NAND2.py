@@ -5,9 +5,7 @@
 Email:ashkan.rezaee@uab.cat
 """
 
-from typing import Sized
 import pya
-import math
 
 class NAND2_v2(pya.PCellDeclarationHelper):
   """

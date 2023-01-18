@@ -5,9 +5,7 @@
 Email:ashkan.rezaee@uab.cat
 """
 
-from typing import Sized
 import pya
-import numpy as np
 
 class Ring_AOI31(pya.PCellDeclarationHelper):
   """

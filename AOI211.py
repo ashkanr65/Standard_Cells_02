@@ -5,10 +5,8 @@
 Email:ashkan.rezaee@uab.cat
 """
 
-from telnetlib import X3PAD
-from typing import Sized
 import pya
-import math
+import numpy as np
 
 class AOI211_v2(pya.PCellDeclarationHelper):
   """

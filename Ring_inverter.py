@@ -5,10 +5,7 @@
 Email:ashkan.rezaee@uab.cat
 """
 
-from sys import path
-from typing import Sized
 import pya
-import math
 
 class Ring_Inv(pya.PCellDeclarationHelper):
   """

@@ -5,9 +5,7 @@
 Email:ashkan.rezaee@uab.cat
 """
 
-from typing import Sized
 import pya
-import math
 
 class MUX_2_V2(pya.PCellDeclarationHelper):
   """
