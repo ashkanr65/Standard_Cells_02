@@ -40,14 +40,13 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
         # Other design rules and other "fixed" variables
         ov = 2.5 / dbu
         nr = 128  # Number of points in a circle
-        txt = self.layout.layer(0,0)
-        bm = self.layout.layer(1, 0)
-        bl = self.layout.layer(2, 0)
-        sd = self.layout.layer(3, 0)
-        gm = self.layout.layer(4, 0)
-        pv = self.layout.layer(6, 0)
-        gc = self.layout.layer(7, 0)
-        pv2 = self.layout.layer(9, 0)
+
+        # Define layer names
+        # layer_names = ["txt", "bm", "bl", "sd", "gm", "pv", "gc", "pv2"]
+        # Assign layers using list comprehension
+        layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
+        # Unpack layers into variables
+        txt, bm, bl, sd, gm, pv, gc, pv2 = layers
 
         area = pya.Region(pya.Box(x + 0, y + 0, x + a, y + b))
         self.cell.shapes(gc).insert(area)
@@ -133,14 +132,12 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
 
   def cut(self):
     dbu = self.layout.dbu
-    txt = self.layout.layer(0,0)
-    bm = self.layout.layer(1, 0)
-    bl = self.layout.layer(2, 0)
-    sd = self.layout.layer(3, 0)
-    gm = self.layout.layer(4, 0)
-    pv = self.layout.layer(6, 0)
-    gc = self.layout.layer(7, 0)
-    pv2 = self.layout.layer(9, 0)
+    # Define layer names
+    # layer_names = ["txt", "bm", "bl", "sd", "gm", "pv", "gc", "pv2"]
+    # Assign layers using list comprehension
+    layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
+    # Unpack layers into variables
+    txt, bm, bl, sd, gm, pv, gc, pv2 = layers
 
     cut = pya.Region(pya.Polygon([
 
@@ -151,11 +148,12 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
        pya.Point(-90/dbu, -195/dbu),
        pya.Point(-90/dbu, 0/dbu)
     ]))
-    rotation = []
-    rotation.append(pya.ICplxTrans(float (1), float(180), True, -435/dbu, -150/dbu))
-    rotation.append(pya.ICplxTrans(float (1), float(0), True, 9435/dbu, 9150/dbu))
-    rotation.append(pya.ICplxTrans(float (1), float(270), True, 9150/dbu, -435/dbu))
-    rotation.append(pya.ICplxTrans(float (1), float(90), True, -150/dbu, 9435/dbu))
+
+    angles = [180, 0, 270, 90]
+    coords = [(-435, -150), (9435, 9150), (9150, -435), (-150, 9435)]
+    # Assign rotation transformations using list comprehension
+    rotation = [pya.ICplxTrans(1.0, a, True, x/dbu, y/dbu) for a,(x,y) in zip(angles, coords)]
+
     layer = [bm, sd, gc]
     for i in range (4):
         for j in layer:
@@ -165,25 +163,20 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
     #Definitions
     dbu = self.layout.dbu
     ind_sz = 500 / dbu
-    txt = self.layout.layer(0,0)
-    bm = self.layout.layer(1, 0)
-    bl = self.layout.layer(2, 0)
-    sd = self.layout.layer(3, 0)
-    gm = self.layout.layer(4, 0)
-    pv = self.layout.layer(6, 0)
-    gc = self.layout.layer(7, 0)
-    pv2 = self.layout.layer(9, 0)
+    # Define layer names
+    # layer_names = ["txt", "bm", "bl", "sd", "gm", "pv", "gc", "pv2"]
+    # Assign layers using list comprehension
+    layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
+    # Unpack layers into variables
+    txt, bm, bl, sd, gm, pv, gc, pv2 = layers
+
     # TOP layout
-    indicator = pya.Region(pya.Box(0, 0, ind_sz, ind_sz))
-    self.cell.shapes(sd).insert(indicator)
-    name = pya.TextGenerator.default_generator().text\
-        ("TOP", 0.001, 290).move(0/dbu, 150/dbu)
-    self.cell.shapes(bm).insert(name)
-    self.cell.shapes(gc).insert(name)
-    name = pya.TextGenerator.default_generator().text\
-        (">>>>", 0.001, 220).move(0/dbu, 0/dbu)
-    self.cell.shapes(bm).insert(name)
-    self.cell.shapes(gc).insert(name)
+    self.cell.shapes(sd).insert(pya.Region(pya.Box(0, 0, ind_sz, ind_sz)))
+    name = pya.TextGenerator.default_generator().text
+    self.cell.shapes(bm).insert(name("TOP", 0.001, 290).move(0/dbu, 150/dbu))
+    self.cell.shapes(gc).insert(name("TOP", 0.001, 290).move(0/dbu, 150/dbu))
+    self.cell.shapes(bm).insert(name(">>>>", 0.001, 220).move(0/dbu, 0/dbu))
+    self.cell.shapes(gc).insert(name(">>>>", 0.001, 220).move(0/dbu, 0/dbu))
 
     self.cut()
 

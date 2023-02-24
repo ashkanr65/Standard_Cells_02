@@ -56,13 +56,11 @@ class NAND2_v2(pya.PCellDeclarationHelper):
         posy = y / self.layout.dbu
 
         nr = 128  # Number of points in a circle
-        bm = self.layout.layer(1, 0)
-        bl = self.layout.layer(2, 0)
-        sd = self.layout.layer(3, 0)
-        gm = self.layout.layer(4, 0)
-        pv = self.layout.layer(6, 0)
-        gc = self.layout.layer(7, 0)
-        pv2 = self.layout.layer(9, 0)
+        # Define layer names
+        # Assign layers using list comprehension
+        layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
+        # Unpack layers into variables
+        txt, bm, bl, sd, gm, pv, gc, pv2 = layers
 
         # create the shape
         # back-gate layer
@@ -226,14 +224,11 @@ class NAND2_v2(pya.PCellDeclarationHelper):
   def transistor(self, level, x, y, w_i, n_i, l_i, bg, load, Int_Con, ov_l, ov_r, out):
     # Other design rules and other "fixed" variables, such as layer identifiers, path widths, via hole sizes, etc.
     nr = 128 # Number of points in a circle
-    bm = self.layout.layer(1,0)
-    bl = self.layout.layer(2,0)
-    sd = self.layout.layer(3,0)
-    gm = self.layout.layer(4,0)
-    pv = self.layout.layer(6,0)
-    gc = self.layout.layer(7,0)
-    pv2= self.layout.layer(9,0)
-    gc2= self.layout.layer(10,0)
+    # Define layer names
+    # Assign layers using list comprehension
+    layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
+    # Unpack layers into variables
+    txt, bm, bl, sd, gm, pv, gc, pv2 = layers
 
     # fetch the parameters
     dbu = self.layout.dbu # How large the database unit is in microns (usually 0.001, i.e. 1 nm)
@@ -666,15 +661,11 @@ class NAND2_v2(pya.PCellDeclarationHelper):
     finger_width_dbu = finger_width / dbu
     path_step = path_width_dbu + finger_sep_dbu
     right_ov_load = path_width + finger_sep
-    txt = self.layout.layer(0,0)
-    bm = self.layout.layer(1,0)
-    bl = self.layout.layer(2,0)
-    sd = self.layout.layer(3,0)
-    gm = self.layout.layer(4,0)
-    pv = self.layout.layer(6,0)
-    gc = self.layout.layer(7,0)
-    pv2= self.layout.layer(9,0)
-    gc2= self.layout.layer(10,0)
+    # Define layer names
+    # Assign layers using list comprehension
+    layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
+    # Unpack layers into variables
+    txt, bm, bl, sd, gm, pv, gc, pv2 = layers
     q = self.l_d / self.l_l
     p = int(self.r / q)
     y = 0
