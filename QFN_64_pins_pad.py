@@ -153,11 +153,29 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
     coords = [(-435, -150), (9435, 9150), (9150, -435), (-150, 9435)]
     # Assign rotation transformations using list comprehension
     rotation = [pya.ICplxTrans(1.0, a, True, x/dbu, y/dbu) for a,(x,y) in zip(angles, coords)]
-
     layer = [bm, sd, gc]
     for i in range (4):
         for j in layer:
             self.cell.shapes(j).insert(cut, rotation[i])
+    
+    # Cell separation txt lines
+    txt_rect = pya.Region(pya.Polygon([
+       pya.Point(0, 0),
+       pya.Point(4500/dbu, 0/dbu),
+       pya.Point(4500/dbu, 9000/dbu),
+       pya.Point(9000/dbu, 9000/dbu),
+       pya.Point(9000/dbu, 4500/dbu),
+       pya.Point(0/dbu, 4500/dbu)
+    ]))
+    txt_rect = txt_rect + pya.Region(pya.Box(
+       0, 0, 9000/dbu, 9000/dbu))
+    txt_rect = txt_rect + pya.Region(pya.Polygon([
+       pya.Point(0, 0),
+       pya.Point(9000/dbu, 9000/dbu),
+       pya.Point(9000/dbu, 0),
+       pya.Point(0, 9000/dbu)
+    ]))
+    self.cell.shapes(txt).insert(txt_rect)
 
   def impl(self):
     #Definitions
