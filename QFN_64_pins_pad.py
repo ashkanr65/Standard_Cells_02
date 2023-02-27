@@ -191,10 +191,11 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
     # TOP layout
     self.cell.shapes(sd).insert(pya.Region(pya.Box(0, 0, ind_sz, ind_sz)))
     name = pya.TextGenerator.default_generator().text
-    self.cell.shapes(bm).insert(name("TOP", 0.001, 290).move(0/dbu, 150/dbu))
-    self.cell.shapes(gc).insert(name("TOP", 0.001, 290).move(0/dbu, 150/dbu))
-    self.cell.shapes(bm).insert(name(">>>>", 0.001, 220).move(0/dbu, 0/dbu))
-    self.cell.shapes(gc).insert(name(">>>>", 0.001, 220).move(0/dbu, 0/dbu))
+    # self.cell.shapes(bm).insert(name("TOP", 0.001, 290).move(0/dbu, 150/dbu))
+    self.cell.shapes(bm).insert((name("Back", 0.001, 210)), pya.DTrans(90, True, 500, 300))
+    self.cell.shapes(gc).insert((name("TOP", 0.001, 290)), pya.DTrans(0, False, 0, 280))
+    self.cell.shapes(bm).insert(name(">>>>", 0.001, 220))
+    self.cell.shapes(gc).insert(name(">>>>", 0.001, 220))
 
     self.cut()
 
