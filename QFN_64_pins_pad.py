@@ -198,7 +198,7 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
 
     self.cut()
 
-    bo = [0, 8550]
+    bo = [0, 8600]
     for k in (bo):
         for i in range(16):
             self.create_pad(625+(i*500), k, 250, 400)
