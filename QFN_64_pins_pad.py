@@ -201,10 +201,8 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
     bo = [0, 8550]
     for k in (bo):
         for i in range(16):
-            # self.create_pad(625+(i*500), k, 250, 400)
-            # self.create_pad(k, 625+(i*500), 400, 250)
-            self.create_pad(575+(i*500), k, 350, 500)
-            self.create_pad(k, 575+(i*500), 500, 350)
+            self.create_pad(625+(i*500), k, 250, 400)
+            self.create_pad(k, 625+(i*500), 400, 250)
     
   def produce_impl(self):
     
