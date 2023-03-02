@@ -159,23 +159,16 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
             self.cell.shapes(j).insert(cut, rotation[i])
     
     # Cell separation txt lines
-    txt_rect = pya.Region(pya.Polygon([
-       pya.Point(0, 0),
-       pya.Point(4500/dbu, 0/dbu),
-       pya.Point(4500/dbu, 9000/dbu),
-       pya.Point(9000/dbu, 9000/dbu),
-       pya.Point(9000/dbu, 4500/dbu),
-       pya.Point(0/dbu, 4500/dbu)
-    ]))
-    txt_rect = txt_rect + pya.Region(pya.Box(
-       0, 0, 9000/dbu, 9000/dbu))
-    txt_rect = txt_rect + pya.Region(pya.Polygon([
-       pya.Point(0, 0),
-       pya.Point(9000/dbu, 9000/dbu),
-       pya.Point(9000/dbu, 0),
-       pya.Point(0, 9000/dbu)
-    ]))
-    self.cell.shapes(txt).insert(txt_rect)
+    coords = [(i*500+750)/dbu for i in range(16)]
+    paths = [pya.Path([pya.Point(c, 0), pya.Point(c, 9000/dbu)], 0.1) for c in coords] + \
+            [pya.Path([pya.Point(0, c), pya.Point(9000/dbu, c)], 0.1) for c in coords]
+    for path in paths:
+        self.cell.shapes(txt).insert(path)
+
+    circle = pya.Region(pya.Box(4350/dbu,4350/dbu,4650/dbu,4650/dbu)).rounded_corners(0, 200/dbu, 128)
+    circle = circle - pya.Region(pya.Box(4400/dbu,4400/dbu,4600/dbu,4600/dbu)).rounded_corners(0, 100/dbu, 128)
+    self.cell.shapes(bm).insert(circle)
+
 
   def impl(self):
     #Definitions
@@ -191,7 +184,6 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
     # TOP layout
     self.cell.shapes(sd).insert(pya.Region(pya.Box(0, 0, ind_sz, ind_sz)))
     name = pya.TextGenerator.default_generator().text
-    # self.cell.shapes(bm).insert(name("TOP", 0.001, 290).move(0/dbu, 150/dbu))
     self.cell.shapes(bm).insert((name("Back", 0.001, 210)), pya.DTrans(90, True, 500, 300))
     self.cell.shapes(gc).insert((name("TOP", 0.001, 290)), pya.DTrans(0, False, 0, 280))
     self.cell.shapes(bm).insert(name(">>>>", 0.001, 220))
