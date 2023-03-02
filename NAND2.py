@@ -9,7 +9,7 @@ import pya
 
 class NAND2_v2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the NAND2.
   """
 
   def __init__(self):

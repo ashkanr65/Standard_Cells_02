@@ -9,7 +9,7 @@ import pya
 
 class Ring_NOR4(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the Ring_NOR4.
   """
 
   def __init__(self):

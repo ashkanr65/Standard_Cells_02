@@ -9,7 +9,7 @@ import pya
 
 class MUX_4_V2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the MUX4.
   """
 
   def __init__(self):

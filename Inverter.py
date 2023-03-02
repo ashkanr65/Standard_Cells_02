@@ -9,7 +9,7 @@ import pya
 
 class Inverter_V2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the Inverter.
   """
 
   def __init__(self):

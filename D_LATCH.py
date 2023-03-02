@@ -9,7 +9,7 @@ import pya
 
 class DLatch_v2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the D_Latch.
   """
 
   def __init__(self):

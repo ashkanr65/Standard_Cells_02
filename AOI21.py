@@ -9,7 +9,7 @@ import pya
 
 class AOI21_v2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the AOI21.
   """
 
   def __init__(self):

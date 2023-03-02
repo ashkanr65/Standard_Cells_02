@@ -9,7 +9,7 @@ import pya
 
 class Ring_NAND2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the Ring_NAND2.
   """
 
   def __init__(self):

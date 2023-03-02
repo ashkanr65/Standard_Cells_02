@@ -9,7 +9,7 @@ import pya
 
 class SRAM_6T(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the SRAM_6T.
   """
 
   def __init__(self):

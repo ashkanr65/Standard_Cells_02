@@ -9,7 +9,7 @@ import pya
 
 class XOR_V2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the XOR_V2.
   """
 
   def __init__(self):

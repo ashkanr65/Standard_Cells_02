@@ -9,7 +9,7 @@ import pya
 
 class NOR3_v2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the NOR3.
   """
 
   def __init__(self):

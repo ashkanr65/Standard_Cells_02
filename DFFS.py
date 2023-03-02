@@ -9,7 +9,7 @@ import pya
 
 class DFFS_V2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the DFFS.
   """
 
   def __init__(self):

@@ -9,7 +9,7 @@ import pya
 
 class DFF_chain(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the DFF_Chain.
   """
 
   def __init__(self):

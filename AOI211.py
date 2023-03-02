@@ -10,7 +10,7 @@ import numpy as np
 
 class AOI211_v2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the AOI211.
   """
 
   def __init__(self):

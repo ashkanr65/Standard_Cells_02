@@ -9,7 +9,7 @@ import pya
 
 class Ring_AOI31(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the Ring_AOI31.
   """
 
   def __init__(self):

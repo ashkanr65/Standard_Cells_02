@@ -10,7 +10,7 @@ import numpy as np
 
 class NOR4_v2(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the NOR4.
   """
 
   def __init__(self):

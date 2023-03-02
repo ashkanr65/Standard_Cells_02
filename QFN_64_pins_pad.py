@@ -9,7 +9,7 @@ import pya
 
 class QFN_64_pins_pad(pya.PCellDeclarationHelper):
   """
-  The PCell declaration for the Corbino
+  The PCell declaration for the QFN_64_pins_pad.
   """
 
   def __init__(self):
