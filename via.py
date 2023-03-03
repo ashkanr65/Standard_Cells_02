@@ -19,14 +19,27 @@ class Via(pya.PCellDeclarationHelper):
         # Declare the parameters
         self.param("r", self.TypeDouble, "Via radius", default=1.25)
         self.param("ov", self.TypeDouble, "Overlap", default=2.5)
-        self.param("f_lay", self.TypeInt, "First layer", default=3)
-        self.param("s_lay", self.TypeInt, "Second layer", default=4)
+        self.param("f_lay", self.TypeDouble, "First layer", default=1)
+        self.param("s_lay", self.TypeDouble, "Second layer", default=3)
 
     def display_text_impl(self):
         """
         Provide a descriptive text for the cell.
         """
         return "Via"
+    
+    def coerce_parameters_impl(self):
+        # Check if text layer is selected as input
+        if not (self.f_lay and self.s_lay):
+            raise Exception("You cannot select text layer as input")
+        
+        # Check if connecting SD metal to BM directly
+        if {self.f_lay, self.s_lay} == {3, 1}:
+            raise Exception("You cannot connect SD metal to BM directly")
+        
+        # Check if selecting the same layers
+        if self.f_lay == self.s_lay:
+            raise Exception("You cannot select the same layers")
 
     def can_create_from_shape_impl(self):
         """
@@ -49,6 +62,9 @@ class Via(pya.PCellDeclarationHelper):
         r = self.r / dbu
         ov = self.ov / dbu
 
+        # Adjust layer numbers if greater than 5
+        self.f_lay -= self.f_lay > 5
+        self.s_lay -= self.s_lay > 5
         # Create via region
         via_box = pya.Region(pya.Box(-r, -r, r, r)).rounded_corners(0, 2*r, nr)
         self.cell.shapes(pv).insert(via_box)

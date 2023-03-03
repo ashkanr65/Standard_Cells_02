@@ -182,20 +182,20 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
     txt, bm, bl, sd, gm, pv, gc, pv2 = layers
 
     # TOP layout
-    self.cell.shapes(sd).insert(pya.Region(pya.Box(0, 0, ind_sz, ind_sz)))
+    # self.cell.shapes(sd).insert(pya.Region(pya.Box(0, 0, ind_sz, ind_sz)))
     name = pya.TextGenerator.default_generator().text
     self.cell.shapes(bm).insert((name("Back", 0.001, 210)), pya.DTrans(90, True, 500, 300))
-    self.cell.shapes(gc).insert((name("TOP", 0.001, 290)), pya.DTrans(0, False, 0, 280))
+    self.cell.shapes(gc).insert((name("TOP", 0.001, 290)), pya.DTrans(0, False, 0, 150))
     self.cell.shapes(bm).insert(name(">>>>", 0.001, 220))
     self.cell.shapes(gc).insert(name(">>>>", 0.001, 220))
 
     self.cut()
 
-    bo = [0, 8600]
-    for k in (bo):
-        for i in range(16):
-            self.create_pad(625+(i*500), k, 250, 400)
-            self.create_pad(k, 625+(i*500), 400, 250)
+    # bo = [0, 8600]
+    # for k in (bo):
+    #     for i in range(16):
+    #         self.create_pad(625+(i*500), k, 250, 400)
+    #         self.create_pad(k, 625+(i*500), 400, 250)
     
   def produce_impl(self):
     
