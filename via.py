@@ -61,7 +61,7 @@ class Via(pya.PCellDeclarationHelper):
         overlap = self.overlap / dbu   # calculates the ovelap in terms of DBU
         
         # Create via region using pya.Region()
-        via_box = pya.Region(pya.Box(-radius, -radius, radius, radius)).rounded_corners(0, 2*radius, nr)
+        via_box = pya.Polygon().ellipse(pya.DBox(-radius, -radius, radius, radius), nr)
         # Insert shapes into specific layers
         self.cell.shapes(pv).insert(via_box)
         self.cell.shapes(self.first_layer).insert(via_box.sized(overlap))
