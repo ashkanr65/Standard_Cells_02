@@ -20,6 +20,7 @@ class Via(pya.PCellDeclarationHelper):
         self.param("radius", self.TypeDouble, "Via radius", default=1.25)   # declaring the radius parameter (default is 1.25)
         self.param("overlap", self.TypeDouble, "Overlap", default=2.5)     # declaring the overlap parameter (default is 2.5)
         self.param("first_layer", self.TypeDouble, "First layer", default=1)   # declaring the first layer parameter (default is 1)
+        self.param("Circles", self.TypeBoolean, "Circles", default= True)     # declaring the circles parameter (default is True))
 
     def display_text_impl(self):
         """
@@ -61,8 +62,18 @@ class Via(pya.PCellDeclarationHelper):
         overlap = self.overlap / dbu   # calculates the ovelap in terms of DBU
         
         # Create via region using pya.Region()
-        via_box = pya.Polygon().ellipse(pya.DBox(-radius, -radius, radius, radius), nr)
+        via_circle = pya.Polygon().ellipse(pya.DBox(-radius, -radius, radius, radius), nr)
         # Insert shapes into specific layers
-        self.cell.shapes(pv).insert(via_box)
-        self.cell.shapes(self.first_layer).insert(via_box.sized(overlap))
-        self.cell.shapes(gc).insert(via_box.sized(overlap))
+        self.cell.shapes(pv).insert(via_circle)
+        # Check whether or not via is circle
+        if self.Circles:
+            # If True, insert via_circle with the specified overlap into both shapes on first_layer and gc layers
+            self.cell.shapes(self.first_layer).insert(via_circle.sized(overlap))
+            self.cell.shapes(gc).insert(via_circle.sized(overlap))
+        else:
+            # If False, create a box called via_box with dimensions [-radius, -radius, radius, radius], in a Region object
+            via_box = pya.Region(pya.Box(-radius, -radius, radius, radius))
+            # Insert the via_box with specified overlap into both shapes on first_layer and gc layers
+            self.cell.shapes(self.first_layer).insert(via_box.sized(overlap))
+            self.cell.shapes(gc).insert(via_box.sized(overlap))
+        
