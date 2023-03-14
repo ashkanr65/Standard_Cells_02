@@ -489,13 +489,13 @@ class Transistor(pya.PCellDeclarationHelper):
         vss = pya.Region(pya.Box(posx - source_backbone_region.bbox().bottom, VSS_T_E + finger_sep\
             , posx - source_backbone_region.bbox().top, VSS_B_E))
         self.cell.shapes(sd).insert(vss)
-        
+    V_Ele = pya.Region(pya.Box(0,0,0,0))    
     Right_Edge = posx + source_drain_region.bbox().top + finger_width #Right edge of Cell
     if(level == 1):
-     VDD_Ele = pya.Region(pya.Box(Left_Edge - ov_l, VDD_B_E, Right_Edge + ov_r, VDD_T_E)) # VDD rail
+     VDD_Ele = V_Ele + pya.Region(pya.Box(Left_Edge - ov_l, VDD_B_E, Right_Edge + ov_r, VDD_T_E)) # VDD rail
      V_Ele = VDD_Ele
     if(level == 3):
-     VSS_Ele = pya.Region(pya.Box(Left_Edge - ov_l, VSS_B_E, Right_Edge + ov_r, VSS_T_E)) # VSS rail
+     VSS_Ele = V_Ele + pya.Region(pya.Box(Left_Edge - ov_l, VSS_B_E, Right_Edge + ov_r, VSS_T_E)) # VSS rail
      V_Ele = VSS_Ele
     #V_Ele = VDD_Ele + VSS_Ele #Old version did not use if levels here. 
     if (level != 2): #it is not a flota cell
