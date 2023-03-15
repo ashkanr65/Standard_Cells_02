@@ -47,7 +47,6 @@ class Via(pya.PCellDeclarationHelper):
         has a finite bounding box.
         """
         return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
-
     
     def produce_impl(self):
         """
@@ -90,5 +89,4 @@ class Via(pya.PCellDeclarationHelper):
             pya.Point(0, -radius),
             pya.Point(0, radius)
         ], radius)
-        self.cell.shapes(gc).insert(hor)
-        
+        self.cell.shapes(gc).insert(hor)   
