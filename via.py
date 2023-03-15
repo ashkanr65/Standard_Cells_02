@@ -76,4 +76,19 @@ class Via(pya.PCellDeclarationHelper):
             # Insert the via_box with specified overlap into both shapes on first_layer and gc layers
             self.cell.shapes(self.first_layer).insert(via_box.sized(overlap))
             self.cell.shapes(gc).insert(via_box.sized(overlap))
+
+        # Center the Via region
+        # Define vertical line using pya Path and add it to the layout cell 
+        vert = pya.Path([
+            pya.Point(-radius, 0),
+            pya.Point(radius, 0)
+        ], radius)
+        self.cell.shapes(gc).insert(vert)
+        
+        # Define horizontal line using pya Path and add it to the layout cell
+        hor = pya.Path([
+            pya.Point(0, -radius),
+            pya.Point(0, radius)
+        ], radius)
+        self.cell.shapes(gc).insert(hor)
         
