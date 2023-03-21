@@ -1,264 +1,428 @@
 # $autorun
 # -*- coding: utf-8 -*-
 """
-@author: Ashkan
-Email:ashkan.rezaee@uab.cat
+PCell declaration for the QFN_64_pins_pad.
+Author: Ashkan (ashkan.rezaee@uab.cat)
 """
 
 import pya
 
 class QFN_64_pins_pad(pya.PCellDeclarationHelper):
-  """
-  The PCell declaration for the QFN_64_pins_pad.
-  """
+    """
+    The PCell declaration for the QFN_64_pins_pad.
+    """
 
-  def __init__(self):
+    def __init__(self):
 
-    # Important: initialize the super class
-    super(QFN_64_pins_pad, self).__init__()
+        # Important: initialize the super class
+        super(QFN_64_pins_pad, self).__init__()
 
-    # declare the parameters
+        # declare the parameters
 
-  def display_text_impl(self):
-    # Provide a descriptive text for the cell
-    return "Pads"
+    def display_text_impl(self):
+        # Return the descriptive text for the cell
+        return "QFN_64_pins_pad"
 
-  def can_create_from_shape_impl(self):
-    # Implement the "Create PCell from shape" protocol: we can use any shape which 
-    # has a finite bounding box
-    return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
+    def can_create_from_shape_impl(self):
+        # Implement the "Create PCell from shape" protocol
+        # This PCell can be created from any shape with a finite bounding box
+        return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
      
-  def create_pad(self, x, y, a, b):
-    # This is the main part of the implementation: create the layout
-
-    # fetch the parameters
-    # Get the database unit, as w_via_cir is defined in microns the conversion is needed
-    dbu = self.layout.dbu   
-    w_via_cir = 2.5 / dbu
-    
-    # Resize x, y coordinates, width and height to be measured in terms of dbu
-    x, y, a, b = x / dbu, y / dbu, a / dbu, b / dbu
-    
-    # Define sd_width for later use
-    sd_width = 50 / dbu
-    
-    # Define other design rules and fixed objects (measured in terms of dbu)
-    ov = 2.5 / dbu    # via overlap 
-    nr = 128          # Number of points in a circle
-    
-    # Obtain layer objects by calling the layout's layer method with desired layer indexes.
-    layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
-    
-    # Unpack values from list comprehension into convenient named variables 
-    txt, bm, bl, sd, gm, pv, gc, pv2 = layers
-    
-    # Create area object using pya.Region() for specified box
-    area = pya.Region(pya.Box(x + 0, y + 0, x + a, y + b))
-    
-    # Connect area object with specific Layers viathe shapes method of this cell
-    # polygon inside geometry contains rectangle defined by x,y,a,b 
-    self.cell.shapes(gc).insert(area)  
-    self.cell.shapes(bm).insert(area)
-    
-    # Create another Region object for the bar 
-    sd_region_bar = pya.Region(pya.Box(x + sd_width, y + sd_width, x + a - sd_width, y + b - sd_width))
-    
-    # Insert masked areas using shape's difference method which subtracts overlapped areas from given shape 
-    self.cell.shapes(sd).insert(area - sd_region_bar)    
-    self.cell.shapes(gc).insert(area - sd_region_bar)
-    
-    # For the given heights around segment, create a partial ellipse with defined radius size and find their location on print board.
-    ho = [b - (sd_width / 2), (sd_width / 2)]
-    for i in (ho):
-        circumscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
-            x + (a / 2 - (w_via_cir)),   # xmin 
-            y + (i  - (w_via_cir)),     # ymin
-            x + (a / 2 + (w_via_cir)),   # xmax
-            y + (i + (w_via_cir)),      # ymax
-            ), nr)   # nr defines number of points to represent elipse shape 
-    
-        # nested loops to insert the via shapes into coordinates determined from mathematical operations       
-        p = 0     #counter variable initialization
-        while ( p + 1 < (sd_width / 2) / (2 * w_via_cir + 2 * ov)):   # conditional check with mathematical operation
-            k = 0   # counter variable initialization
-            while ( k + 1 < (a / 2 ) / (2 * w_via_cir + 4 * ov)):   # conditional check with mathematical operation
-                ho_x = [k * (2 * w_via_cir + 4 * ov), -k * (2 * w_via_cir + 4 * ov)] # list of X-coordinates determined mathematically during every iteration.
-                ho_y = [p * (2 * w_via_cir + 4 * ov), -p * (2 * w_via_cir + 4 * ov)] # list of Y-coordinates determined mathematically during every iteration. 
-                for i in (ho_x):           # loop through X-coordinate list 
-                    for j in (ho_y):       # loop through Y-coordinate list
-                        self.cell.shapes(pv).insert(circumscribed_circle_via.moved( #add this shape to polygon layer with a move function
-                        i, j))
-                        self.cell.shapes(gc).insert(circumscribed_circle_via.moved(  # add a duplicate of that shape to the guard ring layer.
-                        i, j).sized(2 * ov))
-                k += 1     # progress the counter variable k by 1
-            p += 1         #progress the counter
+    def create_pad(self, x, y, a, b, rot):
+        """
+        This function creates a layout pad at position (x,y) with width 'a' and height 'b', rotated by angle 'rot'.
         
+        :param x: x-coordinate of the pad
+        :param y: y-coordinate of the pad
+        :param a: width of the pad
+        :param b: height of the pad
+        :param rot: rotation angle of the pad
+        """
+        # Get the database unit, as w_via_cir is defined in microns the conversion is needed
+        dbu = self.layout.dbu   
+        w_via_cir = 2.5 / dbu
+        # Resize x,y coordinates and width/height to be measured in terms of dbu.
+        x /= dbu
+        y /= dbu
+        a /= dbu
+        b /= dbu
+        
+        # Define sd_width for later use
+        sd_width = 50 / dbu
+        pv_cir_sd = 6 / dbu
+        ov_cir_sd = 7 / dbu
+        in_h_cir_sd = 22 / dbu
+        in_v_cir_sd = 27 / dbu
+        inner_cir_via = 10 / dbu
+        inner_ov_via = 10 / dbu
 
-        # Creates a list of two elements representing the position of vias along the vertical axis.
-        ve = [a - (sd_width / 2), (sd_width / 2)]
-    
-        # Loop through the two elements in the ve list.
-        for j in (ve):
-            # Create a polygon object with a circular shape that circumscribes via, using DBox to specify its dimensions.
+        # Define other design rules and fixed objects (measured in terms of dbu)
+        ov = 2.5 / dbu    # via overlap 
+        nr = 128          # Number of points in a circle
+        
+        # Obtain layer objects by calling the layout's layer method with desired layer indexes.
+        layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
+        
+        # Unpack values from list comprehension into convenient named variables 
+        txt, bm, bl, sd, gm, pv, gc, pv2 = layers
+        
+        # Define the area region as a rectangle with bottom-left corner at (x,y) and top-right corner at (x+a,y+b).
+        area = pya.Region(pya.Box(x, y, x + a, y + b))
+
+        # Calculate the center point of the area region.
+        center_x = area.bbox().center().x
+        center_y = area.bbox().center().y
+
+        # Create a transformation object for rotation around the center point.
+        if rot == False:
+            trans = pya.Trans(pya.Trans.R0)
+        else:
+            trans = pya.Trans(pya.Trans.R90)
+
+        # Apply the transformation to the area region.
+        area = area.transform(trans)
+        
+        # Connect area object with specific layers via the shapes method of this cell.
+        self.cell.shapes(gc).insert(area)  
+        self.cell.shapes(bm).insert(area)
+            
+        # Create another Region object for the bar.
+        sd_region_bar = pya.Region(pya.Box(area.bbox().left + sd_width,
+            area.bbox().bottom + sd_width,
+            area.bbox().right - sd_width,
+            area.bbox().top - sd_width))
+        
+        # Subtract the bar region from the area region to create a new region.
+        sd_region = area - sd_region_bar
+        
+        # Insert masked areas using shape's difference method which subtracts overlapped areas from given shape.
+        self.cell.shapes(sd).insert(sd_region)
+
+        # Inserts sd_region shape with the defined parameters again to the 'gc' layer of a cell object.
+        self.cell.shapes(gc).insert(sd_region)
+        
+        # Resizes the sd_region by subtracting the given value from its dimensions and assigns the result to pc_sd_region variable.
+        pv_sd_region = sd_region.sized(-(4*w_via_cir + 4*ov))
+        
+        # Inserts pc_sd_region shape with defined parameters to the 'pv' layer of a cell object.
+        self.cell.shapes(pv).insert(pv_sd_region)
+        
+        # Create GC-PV attachment
+        spacing = 6*w_via_cir + 6*ov
+        gc_pv_attachment = pya.Region(pya.Box(sd_region_bar.bbox().left + spacing,
+            sd_region_bar.bbox().bottom + spacing,
+            sd_region_bar.bbox().right - spacing,
+            sd_region_bar.bbox().top - spacing))
+        self.cell.shapes(pv).insert(gc_pv_attachment)    
+        
+        # Calculate values for m,n,k,l depending on the value of rot.
+        if rot == False:
+            m = int(a * dbu / 21)
+            n = int((a * dbu - 50) / 21)
+            k = int((b * dbu - 20) / 21)
+            l = int((b * dbu - 85) / 21)
+        else:
+            m = int(b * dbu / 22)
+            n = int((b * dbu - 50) / 21)
+            k = int(a * dbu / 21)
+            l = int((a * dbu - 75) / 21)
+
+        # Create a circumscribed circle via depending on the value of rot.
+        # Create Outer horizontal vias
+        if rot == False:
             circumscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
-                x + (j - (w_via_cir)),
-                y + (b / 2  - (w_via_cir)),
-                x + (j + (w_via_cir)),
-                y + (b / 2 + (w_via_cir)),
+                area.bbox().left + in_h_cir_sd,
+                area.bbox().bottom + ov_cir_sd,
+                area.bbox().left + in_h_cir_sd + pv_cir_sd,
+                area.bbox().bottom + ov_cir_sd + pv_cir_sd
             ), nr)
-    
-            # layout
-            p = 0
-            # The first nested loop increments by multiples of horizontal pitch and adds 5 times spacing between vias. 
-            while ( p + 1 < ((b - sd_width) / 2) / (2 * w_via_cir + 5 * ov)):
-                k = 0 
-                # The second nested loop increments by multiples of vertical pitch and adds 2 times spacing between vias.  
-                while ( k + 1 < (sd_width / 2 ) / (2 * w_via_cir + 2 * ov)):
-                    # Calculates the horizontal and vertical positioning of the vias and stores them into the lists ho_x and ho_y.
-                    ho_x = [k * (2 * w_via_cir + 4 * ov), -k * (2 * w_via_cir + 4 * ov)]
-                    ho_y = [p * (2 * w_via_cir + 4 * ov), -p * (2 * w_via_cir + 4 * ov)]
-                    # Loop through the values in the ho_x and ho_y lists and insert the polyogns, both as themselves and sized up with the constant ov.
-                    for i in (ho_x):
-                        for j in (ho_y):
-                            self.cell.shapes(pv).insert(circumscribed_circle_via.moved(i, j))
-                            self.cell.shapes(gc).insert(circumscribed_circle_via.moved(i, j).sized(2 * ov))
-                    k += 1
-                p += 1
-    
-        # Inscribed
-        # Create a polygon object with a circular shape that inscribes via, using DBox to specify its dimensions.
-        inscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
-              x + (a / 2- (1.5 * w_via_cir)),
-              y + (b / 2 - (1.5 * w_via_cir)),
-              x + (a / 2 + (1.5 * w_via_cir)),
-              y + (b / 2 + (1.5 * w_via_cir)),
-            ), nr) 
-    
-        # The code above creates vias both using a circumscribed and inscribed circle, depending on size requirements.
-    
-        # p and k correspond to the number of inscribed circles that can be inserted vertically or horizontally given current dimensions
-        p = 0
-        while ( p+1 < (b/2 - sd_width) / (3*w_via_cir+6*ov)):  
-            k = 0 
-            while ( k+1 < (a/2 - sd_width) / (3*w_via_cir+6*ov)):
-    
-                # Find candidate locations for horizontal wire segments
-                ho_x = [k * (3 * w_via_cir + 6 * ov), -k * (3 * w_via_cir + 6 * ov)]
-    
-                # Find candidate locations for vertical wire segments
-                ho_y = [p * (3 * w_via_cir + 6 * ov), -p * (3 * w_via_cir + 6 * ov)]
-                
-                # Iterate over all candidate locations and insert shapes in each one.
-                for i in (ho_x):
-                    for j in (ho_y):
-                        self.cell.shapes(pv).insert(inscribed_circle_via.moved(
-                        i, j))
-                        self.cell.shapes(gc).insert(inscribed_circle_via.moved(
-                        i, j).sized(3 * ov))
-                k += 1
-            p += 1
-    
+        else:
+            circumscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                area.bbox().left + in_v_cir_sd,
+                area.bbox().bottom + ov_cir_sd,
+                area.bbox().left + in_v_cir_sd + pv_cir_sd,
+                area.bbox().bottom + ov_cir_sd + pv_cir_sd
+            ), nr)
+        # Insert circumscribed_circle_via into the pv and gc layers of the cell object.
+        for i in range(m):
+            self.cell.shapes(pv).insert(circumscribed_circle_via)
+            self.cell.shapes(gc).insert(circumscribed_circle_via.sized(ov_cir_sd))
+            
+            # Move circumscribed_circle_via vertically depending on the value of rot.
+            if rot == False:
+                self.cell.shapes(pv).insert(circumscribed_circle_via.moved(0, b - (2 * ov_cir_sd + pv_cir_sd)))
+                self.cell.shapes(gc).insert(circumscribed_circle_via.moved(0, b - (2 * ov_cir_sd + pv_cir_sd)).sized(ov_cir_sd))
+            else:
+                self.cell.shapes(pv).insert(circumscribed_circle_via.moved(0, a - (2 * ov_cir_sd + pv_cir_sd)))
+                self.cell.shapes(gc).insert(circumscribed_circle_via.moved(0, a - (2 * ov_cir_sd + pv_cir_sd)).sized(ov_cir_sd))
+            
+            # Move circumscribed_circle_via horizontally.
+            circumscribed_circle_via = circumscribed_circle_via.moved(2 * ov_cir_sd + pv_cir_sd, 0)
 
-  def cut(self):
-    dbu = self.layout.dbu
-    # Define layer names -> not used in the code, commented out
-    # layer_names = ["txt", "bm", "bl", "sd", "gm", "pv", "gc", "pv2"]
-    
-    # Assign layers to variables using list comprehension
-    layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
-    
-    # Unpack layers variable into individual layer variables
-    txt, bm, bl, sd, gm, pv, gc, pv2 = layers 
-    
-    # Set nr value to 128
-    nr = 128
-    
-    # Creates a cut polygon 
-    cut = pya.Region(pya.Polygon([
-       pya.Point(0/dbu, 0/dbu),
-       pya.Point(0/dbu, -285/dbu),
-       pya.Point(-285/dbu, -285/dbu),
-       pya.Point(-285/dbu, -195/dbu),
-       pya.Point(-90/dbu, -195/dbu),
-       pya.Point(-90/dbu, 0/dbu)
-    ]))
-    
-    # Sets angles and their corresponding asscoiated (x,y) vertices
-    angles = [180, 0, 270, 90]
-    coords = [(-435, -150), (9435, 9150), (9150, -435), (-150, 9435)]
-    
-    # Assign rotation transformations using list comprehension
-    rotation = [pya.ICplxTrans(1.0, a, True, x/dbu, y/dbu) for a,(x,y) in zip(angles, coords)]
-    layer = [bm, sd, gc]
-    for i in range (4):
-        for j in layer:
-            self.cell.shapes(j).insert(cut, rotation[i])
-    
-    # Cell separation txt lines
-    coords = [(i*500+750)/dbu for i in range(16)]
-    paths = [pya.Path([pya.Point(c, 0), pya.Point(c, 9000/dbu)], 0.1) for c in coords] + \
-            [pya.Path([pya.Point(0, c), pya.Point(9000/dbu, c)], 0.1) for c in coords]
-    for path in paths:
-        self.cell.shapes(txt).insert(path)
+        # Create Inner horizontal vias
+        if rot == False:
+            circumscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                area.bbox().left + 7 * pv_cir_sd,
+                area.bbox().bottom + ov_cir_sd + 5 * pv_cir_sd,
+                area.bbox().left + 8 * pv_cir_sd,
+                area.bbox().bottom + ov_cir_sd + pv_cir_sd + 5 * pv_cir_sd
+            ), nr)
+        else:
+            circumscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                area.bbox().left + 7 * pv_cir_sd + 2 * ov,
+                area.bbox().bottom + ov_cir_sd + 5 * pv_cir_sd,
+                area.bbox().left + 8 * pv_cir_sd + 2 * ov,
+                area.bbox().bottom + ov_cir_sd + pv_cir_sd + 5 * pv_cir_sd,
+            ), nr)
+        
+        for i in range(n):
+            self.cell.shapes(pv).insert(circumscribed_circle_via)
+            self.cell.shapes(gc).insert(circumscribed_circle_via.sized(ov_cir_sd))
 
-    circle = pya.Region(pya.Box(4350/dbu,4350/dbu,4650/dbu,4650/dbu)).rounded_corners(0, 200/dbu, nr)
-    circle = circle - pya.Region(pya.Box(4400/dbu,4400/dbu,4600/dbu,4600/dbu)).rounded_corners(0, 100/dbu, nr)
-    self.cell.shapes(bm).insert(circle)
+            # Move circumscribed_circle_via vertically depending on the value of rot.
+            if ( rot == False):
+                self.cell.shapes(pv).insert(circumscribed_circle_via.moved(0, b - (8 * ov_cir_sd + 4 * pv_cir_sd)))
+                self.cell.shapes(gc).insert(circumscribed_circle_via.moved(0, b - (8 * ov_cir_sd + 4 * pv_cir_sd)).sized(ov_cir_sd))
+            else:
+                self.cell.shapes(pv).insert(circumscribed_circle_via.moved(0, a - (8 * ov_cir_sd + 4 * pv_cir_sd)))
+                self.cell.shapes(gc).insert(circumscribed_circle_via.moved(0, a - (8 * ov_cir_sd + 4 * pv_cir_sd)).sized(ov_cir_sd))
+            
+            # Move circumscribed_circle_via horizontally.
+            circumscribed_circle_via = circumscribed_circle_via.moved(2 * ov_cir_sd + pv_cir_sd, 0)
 
-  def impl(self):
-    #Definitions
-    dbu = self.layout.dbu
-    ind_sz = 500 / dbu
-    # Define layer names
-    # layer_names = ["txt", "bm", "bl", "sd", "gm", "pv", "gc", "pv2"]
-    # Assign layers using list comprehension
-    layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
-    # Unpack layers into variables
-    txt, bm, bl, sd, gm, pv, gc, pv2 = layers
+        # Outer vertical part of the bar
+        if rot == False:
+            circumscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                area.bbox().left + ov_cir_sd,
+                area.bbox().bottom + in_v_cir_sd,
+                area.bbox().left + ov_cir_sd + pv_cir_sd,
+                area.bbox().bottom + in_v_cir_sd + pv_cir_sd,
+            ), nr)
+        else:
+            circumscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                area.bbox().left + ov_cir_sd,
+                area.bbox().bottom + in_h_cir_sd,
+                area.bbox().left + ov_cir_sd + pv_cir_sd,
+                area.bbox().bottom + in_h_cir_sd + pv_cir_sd,
+            ), nr)
+        
+        for i in range(k):
+            self.cell.shapes(pv).insert(circumscribed_circle_via)
+            self.cell.shapes(gc).insert(circumscribed_circle_via.sized(ov_cir_sd))
 
-    # TOP layout
-    # Set the name of the layout
-    name = pya.TextGenerator.default_generator().text
-    # Add a label to the layout for the back side of the circuit board
-    self.cell.shapes(bm).insert((name("Back", 0.001, 210)), pya.DTrans(90, True, 500, 350))
-    # Add a label to the layout for the top side of the circuit board
-    self.cell.shapes(gc).insert((name("TOP", 0.001, 290)), pya.DTrans(0, False, 0, 0))
-    # Add a right arrow to the layout to indicate orientation
-    self.cell.shapes(bm).insert((name(">>>>", 0.001, 220)), pya.DTrans(0, False, 0, 200))
-    self.cell.shapes(gc).insert((name(">>>>", 0.001, 220)), pya.DTrans(0, False, 0, 200))
+            # Move circumscribed_circle_via vertically depending on the value of rot.
+            if rot == False:
+                self.cell.shapes(pv).insert(circumscribed_circle_via.moved(a - (2 * ov_cir_sd + pv_cir_sd), 0))
+                self.cell.shapes(gc).insert(circumscribed_circle_via.moved(a - (2 * ov_cir_sd + pv_cir_sd), 0).sized(ov_cir_sd))
+            else:
+                self.cell.shapes(pv).insert(circumscribed_circle_via.moved(b - (2 * ov_cir_sd + pv_cir_sd), 0))
+                self.cell.shapes(gc).insert(circumscribed_circle_via.moved(b - (2 * ov_cir_sd + pv_cir_sd), 0).sized(ov_cir_sd))
+            
+            # Move circumscribed_circle_via horizontally.
+            circumscribed_circle_via = circumscribed_circle_via.moved(0, 2 * ov_cir_sd + pv_cir_sd)
 
-    # Cut the layout
-    self.cut()
+        # Inner vertical part of the bar
+        if rot == False:
+            circumscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                area.bbox().left + in_v_cir_sd + 0.5 * pv_cir_sd + ov_cir_sd,
+                area.bbox().bottom + in_v_cir_sd + 5 * pv_cir_sd,
+                area.bbox().left + in_v_cir_sd + 1.5 * pv_cir_sd + ov_cir_sd,
+                area.bbox().bottom + in_v_cir_sd + 6 * pv_cir_sd,
+            ), nr)
+        else:
+            circumscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                area.bbox().left + in_h_cir_sd + 2 / dbu + pv_cir_sd + ov_cir_sd,
+                area.bbox().bottom + in_h_cir_sd + 5 * pv_cir_sd,
+                area.bbox().left + in_h_cir_sd + 2 / dbu + 2 * pv_cir_sd + ov_cir_sd,
+                area.bbox().bottom + in_h_cir_sd + 6 * pv_cir_sd,
+            ), nr)
 
-    # Set the position of the pads
-    bo = [0, 8600]
-    for k in (bo):
-        for i in range(16):
-            # Create a pad on the top side of the circuit board
-            self.create_pad(625+(i*500), k, 250, 400)
-            # Create a pad on the back side of the circuit board
-            self.create_pad(k, 625+(i*500), 400, 250)
+        for i in range(l):
+            self.cell.shapes(pv).insert(circumscribed_circle_via)
+            self.cell.shapes(gc).insert(circumscribed_circle_via.sized(ov_cir_sd))
 
-  def produce_impl(self):
-    
-    self.impl()
+            # Move circumscribed_circle_via vertically depending on the value of rot.
+            if rot == False:
+                self.cell.shapes(pv).insert(circumscribed_circle_via.moved(a - (8 * ov_cir_sd + 4 * pv_cir_sd), 0))
+                self.cell.shapes(gc).insert(circumscribed_circle_via.moved(a - (8 * ov_cir_sd + 4 * pv_cir_sd), 0).sized(ov_cir_sd))
+            else:
+                self.cell.shapes(pv).insert(circumscribed_circle_via.moved(b - (8 * ov_cir_sd + 4 * pv_cir_sd), 0))
+                self.cell.shapes(gc).insert(circumscribed_circle_via.moved(b - (8 * ov_cir_sd + 4 * pv_cir_sd), 0).sized(ov_cir_sd))
+
+            # Move circumscribed_circle_via horizontally.
+            circumscribed_circle_via = circumscribed_circle_via.moved(0, 2 * ov_cir_sd + pv_cir_sd)
+
+
+        # Inner circle vias
+        if rot == False:
+            Inscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                    sd_region_bar.bbox().left + inner_ov_via,
+                    sd_region_bar.bbox().bottom + inner_ov_via,
+                    sd_region_bar.bbox().left + inner_ov_via + inner_cir_via,
+                    sd_region_bar.bbox().bottom + inner_ov_via + inner_cir_via,
+                ), nr)
+        else:
+            Inscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                    sd_region_bar.bbox().left + inner_ov_via,
+                    sd_region_bar.bbox().bottom + inner_ov_via,
+                    sd_region_bar.bbox().left + inner_ov_via + inner_cir_via,
+                    sd_region_bar.bbox().bottom + inner_ov_via + inner_cir_via,
+                ), nr)
+
+        for i in range(5):
+            self.cell.shapes(pv).insert(Inscribed_circle_via)
+            self.cell.shapes(gc).insert(Inscribed_circle_via.sized(inner_ov_via))
+
+            # Move circumscribed_circle_via vertically depending on the value of rot.
+            if rot == False:
+                self.cell.shapes(pv).insert(Inscribed_circle_via.moved(0, 270 / dbu))
+                self.cell.shapes(gc).insert(Inscribed_circle_via.moved(0, 270 / dbu).sized(inner_ov_via))
+                # Move circumscribed_circle_via horizontally.
+                Inscribed_circle_via = Inscribed_circle_via.moved(inner_cir_via + 2 * inner_ov_via, 0)
+            else:
+                self.cell.shapes(pv).insert(Inscribed_circle_via.moved(270 / dbu, 0))
+                self.cell.shapes(gc).insert(Inscribed_circle_via.moved(270 / dbu, 0).sized(inner_ov_via))
+                # Move circumscribed_circle_via horizontally.
+                Inscribed_circle_via = Inscribed_circle_via.moved(0, inner_cir_via + 2 * inner_ov_via)
+            
+        # Inner circle vias
+        if rot == False:
+            Inscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                    sd_region_bar.bbox().left + inner_ov_via,
+                    sd_region_bar.bbox().bottom + inner_ov_via,
+                    sd_region_bar.bbox().left + inner_ov_via + inner_cir_via,
+                    sd_region_bar.bbox().bottom + inner_ov_via + inner_cir_via,
+                ), nr)
+        else:
+            Inscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
+                    sd_region_bar.bbox().left + inner_ov_via,
+                    sd_region_bar.bbox().bottom + inner_ov_via,
+                    sd_region_bar.bbox().left + inner_ov_via + inner_cir_via,
+                    sd_region_bar.bbox().bottom + inner_ov_via + inner_cir_via,
+                ), nr)
+
+        for i in range(10):
+            self.cell.shapes(pv).insert(Inscribed_circle_via)
+            self.cell.shapes(gc).insert(Inscribed_circle_via.sized(inner_ov_via))
+
+            # Move circumscribed_circle_via vertically depending on the value of rot.
+            if rot == False:
+                self.cell.shapes(pv).insert(Inscribed_circle_via.moved(120 / dbu, 0))
+                self.cell.shapes(gc).insert(Inscribed_circle_via.moved(120 / dbu, 0).sized(inner_ov_via))
+                # Move circumscribed_circle_via horizontally.
+                Inscribed_circle_via = Inscribed_circle_via.moved(0, inner_cir_via + 2 * inner_ov_via)
+            else:
+                self.cell.shapes(pv).insert(Inscribed_circle_via.moved(0, 120 / dbu))
+                self.cell.shapes(gc).insert(Inscribed_circle_via.moved(0, 120 / dbu).sized(inner_ov_via))
+                # Move circumscribed_circle_via horizontally.
+                Inscribed_circle_via = Inscribed_circle_via.moved(inner_cir_via + 2 * inner_ov_via, 0)
+
+
+    def cut(self):
+        dbu = self.layout.dbu
+        # Define layer names -> not used in the code, commented out
+        # layer_names = ["txt", "bm", "bl", "sd", "gm", "pv", "gc", "pv2"]
+        
+        # Assign layers to variables using list comprehension
+        layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
+        
+        # Unpack layers variable into individual layer variables
+        txt, bm, bl, sd, gm, pv, gc, pv2 = layers 
+        
+        # Set nr value to 128
+        nr = 128
+        
+        # Creates a cut polygon 
+        cut = pya.Region(pya.Polygon([
+        pya.Point(0/dbu, 0/dbu),
+        pya.Point(0/dbu, -285/dbu),
+        pya.Point(-285/dbu, -285/dbu),
+        pya.Point(-285/dbu, -195/dbu),
+        pya.Point(-90/dbu, -195/dbu),
+        pya.Point(-90/dbu, 0/dbu)
+        ]))
+        
+        # Sets angles and their corresponding asscoiated (x,y) vertices
+        angles = [180, 0, 270, 90]
+        coords = [(-435, -150), (9435, 9150), (9150, -435), (-150, 9435)]
+        
+        # Assign rotation transformations using list comprehension
+        rotation = [pya.ICplxTrans(1.0, a, True, x/dbu, y/dbu) for a,(x,y) in zip(angles, coords)]
+        layer = [bm, sd, gc]
+        for i in range (4):
+            for j in layer:
+                self.cell.shapes(j).insert(cut, rotation[i])
+        
+        # Cell separation txt lines
+        coords = [(i * 500 + 750)/dbu for i in range(16)]
+        paths = [pya.Path([pya.Point(c, 0), pya.Point(c, 9000 / dbu)], 0.1) for c in coords] + \
+                [pya.Path([pya.Point(0, c), pya.Point(9000 / dbu, c)], 0.1) for c in coords]
+        for path in paths:
+            self.cell.shapes(txt).insert(path)
+
+        circle = pya.Region(pya.Box(4350 / dbu, 4350 / dbu, 4650 / dbu, 4650 / dbu)).rounded_corners(0, 200 / dbu, nr)
+        circle = circle - pya.Region(pya.Box(4400 / dbu, 4400 / dbu, 4600 / dbu, 4600 / dbu)).rounded_corners(0, 100 / dbu, nr)
+        self.cell.shapes(bm).insert(circle)
+
+    def impl(self):
+        #Definitions
+        dbu = self.layout.dbu
+        ind_sz = 500 / dbu
+        # Define layer names
+        # layer_names = ["txt", "bm", "bl", "sd", "gm", "pv", "gc", "pv2"]
+        # Assign layers using list comprehension
+        layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
+        # Unpack layers into variables
+        txt, bm, bl, sd, gm, pv, gc, pv2 = layers
+
+        # TOP layout
+        # Set the name of the layout
+        name = pya.TextGenerator.default_generator().text
+        # Add a label to the layout for the back side of the circuit board
+        self.cell.shapes(bm).insert((name("Back", 0.001, 210)), pya.DTrans(90, True, 500, 350))
+        # Add a label to the layout for the top side of the circuit board
+        self.cell.shapes(gc).insert((name("TOP", 0.001, 290)), pya.DTrans(0, False, 0, 0))
+        # Add a right arrow to the layout to indicate orientation
+        self.cell.shapes(bm).insert((name(">>>>", 0.001, 220)), pya.DTrans(0, False, 0, 200))
+        self.cell.shapes(gc).insert((name(">>>>", 0.001, 220)), pya.DTrans(0, False, 0, 200))
+
+        # Cut the layout
+        self.cut()
+
+        # Set the position of the pads
+        bo = [0, 8600]
+        # self.create_pad(625, 0, 250, 400, False)
+        # self.create_pad(625, -400, 250, 400, True)
+ 
+        for k in (bo):
+            for i in range(16):
+                # Create a pad on the top side of the circuit board
+                self.create_pad(625+(i*500), k, 250, 400, False)
+
+                # Create a pad on the back side of the circuit board
+                self.create_pad(625+(i*500), k - 9000, 250, 400, True)
+
+
+    def produce_impl(self):
+        
+        self.impl()
 
 class MyLib(pya.Library):
 
-  #The library where we will put the PCell into 
+#The library where we will put the PCell into 
 
-  def __init__(self):
-  
-    # Set the description
-    self.description = "QFN_64_pins_pad"
-    
-    # Create the PCell declarations
-    self.layout().register_pcell("QFN_64_pins_pad", QFN_64_pins_pad())
-    # That would be the place to put in more PCells ...
-    
-    # Register us with the name "MyLib".
-    # If a library with that name already existed, it will be replaced then.
-    self.register("QFN_64_pins_pad")
+    def __init__(self):
+
+        # Set the description
+        self.description = "QFN_64_pins_pad"
+        
+        # Create the PCell declarations
+        self.layout().register_pcell("QFN_64_pins_pad", QFN_64_pins_pad())
+        # That would be the place to put in more PCells ...
+        
+        # Register us with the name "MyLib".
+        # If a library with that name already existed, it will be replaced then.
+        self.register("QFN_64_pins_pad")
 
 # Instantiate and register the library
 MyLib() 
