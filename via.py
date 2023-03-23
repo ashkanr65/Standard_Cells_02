@@ -34,11 +34,11 @@ class Via(pya.PCellDeclarationHelper):
             raise Exception("Incorrect layer has been selected")
         
         # Check radius   
-        if self.radius < 1.25:      # checks if radius is less than 1.25
+        if self.radius < 1.75:      # checks if radius is less than 1.25
             raise Exception("You cannot make radius smaller than 1.25")
         
         # Check overlap
-        if self.overlap < 2.5:      # checks if overlap is less than 2.5
+        if self.overlap < 3.5:      # checks if overlap is less than 2.5
             raise Exception("Overlap cannot be less than 2.5")
 
     def can_create_from_shape_impl(self):
