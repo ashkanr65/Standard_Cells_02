@@ -17,8 +17,8 @@ class Via(pya.PCellDeclarationHelper):
         super(Via, self).__init__()
 
         # Declare the parameters
-        self.param("radius", self.TypeDouble, "Via radius", default=1.25)   # declaring the radius parameter (default is 1.25)
-        self.param("overlap", self.TypeDouble, "Overlap", default=2.5)     # declaring the overlap parameter (default is 2.5)
+        self.param("radius", self.TypeDouble, "Via radius", default=1.75)   # declaring the radius parameter (default is 1.25)
+        self.param("overlap", self.TypeDouble, "Overlap", default=3.5)     # declaring the overlap parameter (default is 2.5)
         self.param("first_layer", self.TypeDouble, "First layer", default=1)   # declaring the first layer parameter (default is 1)
         self.param("Circles", self.TypeBoolean, "Circles", default= True)     # declaring the circles parameter (default is True))
 

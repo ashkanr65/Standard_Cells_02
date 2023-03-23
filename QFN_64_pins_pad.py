@@ -252,7 +252,6 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
             # Move circumscribed_circle_via horizontally.
             circumscribed_circle_via = circumscribed_circle_via.moved(0, 2 * ov_cir_sd + pv_cir_sd)
 
-
         # Inner circle vias
         if rot == False:
             Inscribed_circle_via = pya.Polygon().ellipse(pya.DBox(
@@ -316,7 +315,6 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
                 self.cell.shapes(gc).insert(Inscribed_circle_via.moved(0, 120 / dbu).sized(inner_ov_via))
                 # Move circumscribed_circle_via horizontally.
                 Inscribed_circle_via = Inscribed_circle_via.moved(inner_cir_via + 2 * inner_ov_via, 0)
-
 
     def cut(self):
         dbu = self.layout.dbu
@@ -401,7 +399,6 @@ class QFN_64_pins_pad(pya.PCellDeclarationHelper):
 
                 # Create a pad on the back side of the circuit board
                 self.create_pad(625+(i*500), k - 9000, 250, 400, True)
-
 
     def produce_impl(self):
         
