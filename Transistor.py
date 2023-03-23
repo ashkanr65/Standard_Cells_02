@@ -18,10 +18,9 @@ class Transistor_V2(pya.PCellDeclarationHelper):
     super(Transistor_V2, self).__init__()
 
     # declare the parameters
-    self.param("w", self.TypeInt, "Width per finger", default = 90)
+    self.param("w", self.TypeDouble, "Width per finger", default = 90)
     self.param("n_d", self.TypeInt, "Number of Channels", default = 1)
-    self.param("l_d", self.TypeDouble, "Drive Length", default = 2.5)
-    self.param("l_l", self.TypeDouble, "Load Length", default = 2.5)
+    self.param("l", self.TypeDouble, "Drive Length", default = 2.5)
     self.param("r", self.TypeDouble, "Ratio", default = 1)
     self.param("o", self.TypeDouble, "Metal Overlap", default = 3)
     self.param("gm_ov", self.TypeDouble, "Gate Overlap", default = 1.5)
@@ -401,45 +400,7 @@ class Transistor_V2(pya.PCellDeclarationHelper):
                 self.cell.shapes(gm).insert(PV_Region, rotation)
                 self.cell.shapes(pv).insert(PV_Region.sized(-via_ov), rotation)
     # Load transistors
-    if load==True:
-        if out != 1:
-            # Gate via
-            PV_Region_gm = pya.Region(pya.Box(
-                gate_region.bbox().left,
-                gate_region.bbox().top,
-                gate_region.bbox().left + via_size,
-                gate_region.bbox().top - via_size))
-            self.cell.shapes(gc).insert(PV_Region_gm, rotation)
-            self.cell.shapes(gm).insert(PV_Region_gm, rotation)      
-            self.cell.shapes(pv).insert(
-                PV_Region_gm.sized(-via_ov).round_corners(via_size, via_size, nr),
-                rotation)
-
-            # Back gate via
-            PV_Region_bm = PV_Region_gm.move(0, via_size)
-            self.cell.shapes(gc).insert(PV_Region_bm, rotation)
-            self.cell.shapes(bm).insert(PV_Region_bm, rotation)      
-            self.cell.shapes(pv).insert(
-                PV_Region_bm.sized(-via_ov).round_corners(via_size, via_size, nr),
-                rotation)
-
-            # Output SD via
-            PV_Region_sq_via = PV_Region_bm.move(via_size, bg_ov)
-            self.cell.shapes(gc).insert(PV_Region_sq_via, rotation)
-            self.cell.shapes(sd).insert(PV_Region_sq_via, rotation)
-            self.cell.shapes(pv).insert(
-                PV_Region_bm.sized(-via_ov).round_corners(via_size, via_size, nr),
-                rotation)
-            
-            # SD to BG via
-            sd_gc_via = pya.Region(pya.Box(
-                PV_Region_sq_via.bbox().right,
-                PV_Region_bm.bbox().top,
-                PV_Region_sq_via.bbox().left - via_size,
-                PV_Region_bm.bbox().bottom             
-                )).round_corners(round, round, nr)
-            self.cell.shapes(gc).insert(sd_gc_via,rotation)
-        
+    if load==True:        
         if out != 0:
             # Gate via
             PV_Region_gm = pya.Region(pya.Box(
@@ -462,7 +423,7 @@ class Transistor_V2(pya.PCellDeclarationHelper):
                 rotation)
 
             # Output SD via
-            PV_Region_sq_via = PV_Region_bm.move(-via_size, bg_ov)
+            PV_Region_sq_via = PV_Region_bm.move(via_size, bg_ov)
             self.cell.shapes(gc).insert(PV_Region_sq_via, rotation)
             self.cell.shapes(sd).insert(PV_Region_sq_via, rotation)
             self.cell.shapes(pv).insert(
@@ -471,12 +432,21 @@ class Transistor_V2(pya.PCellDeclarationHelper):
 
             # SD to BG via
             sd_gc_via = pya.Region(pya.Box(
-                PV_Region_sq_via.bbox().left,
+                PV_Region_sq_via.bbox().right,
                 PV_Region_bm.bbox().top,
-                PV_Region_sq_via.bbox().right + via_size,
+                PV_Region_sq_via.bbox().left - via_size,
                 PV_Region_bm.bbox().bottom             
                 )).round_corners(round, round, nr)
             self.cell.shapes(gc).insert(sd_gc_via, rotation)
+
+            # SD_out
+            sd_out = pya.Region(pya.Box(
+                posx - finger_width / 2,
+                posy + VDD_B_E - channel_length,
+                posx - vbg_cover.bbox().top - via_size,
+                posy + VDD_B_E - channel_length - finger_width
+                )).round_corners(round, round, nr)
+            self.cell.shapes(sd).insert(sd_out)
       
     # Vdd and Vss Positions
     if level == 0 or level == 1:
@@ -701,29 +671,18 @@ class Transistor_V2(pya.PCellDeclarationHelper):
     layers = [self.layout.layer(i, 0) for i in [0, 1, 2, 3, 4, 6, 7, 9]]
     # Unpack layers into variables
     txt, bm, bl, sd, gm, pv, gc, pv2 = layers
-    q = self.l_d / self.l_l
-    p = int(self.r / q)
     y = 0
     Top_Edge = (y + w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S)/dbu  #Top edge of Cell
     Top_rail = Top_Edge + self.rail*finger_width_dbu/2
     Bottom_Edge = (y-(w_d/2 + ov + 2*finger_sep + finger_width + self.PDN_S))/dbu #Bottom edge of Cell
     Bottom_rail = Bottom_Edge - self.rail*finger_width_dbu/2
-    x0 = -((self.n_d*self.l_d)+(self.n_d+1)*finger_width)/2 
-    # x0 = 0
-    d_x_0 = ((-2*x0) + finger_sep ) / 5
-    d_x_1 = ((-2*x0) + 2*finger_sep + path_width) / 5
-    d_x_100 = ((-2*x0) + finger_sep ) / 5
-    d_x_101 = ((-2*x0) + 2*finger_sep + finger_width) / 5
-    d_x_110 = ((-2*x0) + 2*finger_sep + finger_width) / 5
-    d_x_111 = ((-2*x0) + 2*finger_sep) / 5
+    x0 = -((self.n_d*self.l)+(self.n_d+1)*finger_width)/2 
 
-    l_x = (((p*self.n_d*self.l_l)+(p*self.n_d+1)*finger_width)/2 -x0\
-        + 2.5*ov +2*via)/5
     Top_Path = (w_d/2 + ov + 2*self.s + finger_width - path_width/2)/dbu #Top edge of Cell
     # third_path = Top_Path / 3 
-    third_path = y/dbu + path_width_dbu/2 + 3*ov_dbu/2 + via/2/dbu
+
     gate_connection = (w_d/2 - path_width/2)/dbu #Top gate of Cell
-    gate_edge = ((self.n_d)*self.l_d+(self.n_d+1)*finger_width)/2
+    gate_edge = ((self.n_d)*self.l+(self.n_d+1)*finger_width)/2
     gate_out = gate_connection + 4*path_step - path_width_dbu/2 + finger_sep_dbu
     gate_in = -gate_out
     #transistors implementation
@@ -741,7 +700,7 @@ class Transistor_V2(pya.PCellDeclarationHelper):
     #If out = 0, the via of the transistors are down
     #If out = 1, the via of the transistors are up
     # (level, x, y, w_i, n_i, l_i, bg, Load, In_Con, overlap_left, overlap_rigth, out)0
-    self.transistor(self.pos, x0, y, w_d, self.n_d, self.l_d, True, self.load, self.int, 0, 0, out)
+    self.transistor(self.pos, x0, y, w_d, self.n_d, self.l, True, self.load, self.int, 0, 0, out)
     #gates name
     iTregion = pya.TextGenerator.default_generator().text\
         ("IN", 0.001, 5).move((x0- gate_edge)/ dbu, -Top_Path - 25 / dbu)
@@ -799,17 +758,17 @@ class Transistor_V2(pya.PCellDeclarationHelper):
         ],path_width_dbu)
         self.cell.shapes(gc).insert(vout)
 
-    #name
-    name = pya.TextGenerator.default_generator().text\
-        ("Trans", 0.001, 10).move((x0 - 15)/ dbu, -85 / dbu)
-    self.cell.shapes(gc).insert(name)
-    self.cell.shapes(sd).insert(name)
-    self.cell.shapes(bm).insert(name)
-    name = pya.TextGenerator.default_generator().text\
-        (self.name, 0.001, 10).move((x0 - 15) / dbu, -95 / dbu)
-    self.cell.shapes(gc).insert(name)
-    self.cell.shapes(sd).insert(name)
-    self.cell.shapes(bm).insert(name)
+    # name
+    # name = pya.TextGenerator.default_generator().text\
+        # ("Trans", 0.001, 10).move((x0 - 15)/ dbu, -85 / dbu)
+    # self.cell.shapes(gc).insert(name)
+    # self.cell.shapes(sd).insert(name)
+    # self.cell.shapes(bm).insert(name)
+    # name = pya.TextGenerator.default_generator().text\
+        # (self.name, 0.001, 10).move((x0 - 15) / dbu, -95 / dbu)
+    # self.cell.shapes(gc).insert(name)
+    # self.cell.shapes(sd).insert(name)
+    # self.cell.shapes(bm).insert(name)
 
   def produce_impl(self):
     
