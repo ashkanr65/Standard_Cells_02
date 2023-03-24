@@ -400,7 +400,7 @@ class Transistor_V2(pya.PCellDeclarationHelper):
                 self.cell.shapes(gm).insert(PV_Region, rotation)
                 self.cell.shapes(pv).insert(PV_Region.sized(-via_ov), rotation)
     # Load transistors
-    if load==True:        
+    if load==True:
         if out != 0:
             # Gate via
             PV_Region_gm = pya.Region(pya.Box(
@@ -423,7 +423,7 @@ class Transistor_V2(pya.PCellDeclarationHelper):
                 rotation)
 
             # Output SD via
-            PV_Region_sq_via = PV_Region_bm.move(via_size, bg_ov)
+            PV_Region_sq_via = PV_Region_bm.move(via_size, finger_width)
             self.cell.shapes(gc).insert(PV_Region_sq_via, rotation)
             self.cell.shapes(sd).insert(PV_Region_sq_via, rotation)
             self.cell.shapes(pv).insert(
@@ -440,12 +440,24 @@ class Transistor_V2(pya.PCellDeclarationHelper):
             self.cell.shapes(gc).insert(sd_gc_via, rotation)
 
             # SD_out
-            sd_out = pya.Region(pya.Box(
-                posx - finger_width / 2,
-                posy + VDD_B_E - channel_length,
-                posx - vbg_cover.bbox().top - via_size,
-                posy + VDD_B_E - channel_length - finger_width
-                )).round_corners(round, round, nr)
+            sd_out = pya.Polygon([
+                pya.Point(posx - channel_length / 2,
+                    posy + VDD_B_E - channel_length),
+                pya.Point(posx - PV_Region_sq_via.bbox().top,
+                    posy + VDD_B_E - channel_length),
+                pya.Point(posx - PV_Region_sq_via.bbox().top,
+                    posy + VSS_T_E + channel_length + finger_width),
+                pya.Point(posx - PV_Region_gm.bbox().top - vbg_cover.bbox().top - finger_width - channel_length / 2,
+                    posy + VSS_T_E + channel_length + finger_width),
+                pya.Point(posx - PV_Region_gm.bbox().top - vbg_cover.bbox().top - finger_width - channel_length / 2,
+                    posy + VSS_T_E + channel_length),
+                pya.Point(posx - PV_Region_sq_via.bbox().top + finger_width,
+                    posy + VSS_T_E + channel_length),
+                pya.Point(posx - PV_Region_sq_via.bbox().top + finger_width,
+                    posy + VDD_B_E - channel_length - finger_width),
+                pya.Point(posx - channel_length / 2,
+                    posy + VDD_B_E - channel_length - finger_width),
+                ]).round_corners(round, round, nr)
             self.cell.shapes(sd).insert(sd_out)
       
     # Vdd and Vss Positions
