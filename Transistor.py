@@ -29,6 +29,7 @@ class Transistor_V2(pya.PCellDeclarationHelper):
     self.param("via", self.TypeDouble, "via size", default = 3.5)
     self.param("via_ov", self.TypeDouble, "via overlap", default = 3.5)
     self.param("vias", self.TypeInt, "I/O", default = 1)
+    self.param("vd_vs", self.TypeBoolean, "VDD and VSS", default = True)
     self.param("load", self.TypeBoolean, "Load?", default = False)
     self.param("pos", self.TypeInt, "Position", default = 1)
     self.param("int", self.TypeInt, "Internal Connection", default = 0)
@@ -250,6 +251,7 @@ class Transistor_V2(pya.PCellDeclarationHelper):
     # Local variables
     ov_l /= dbu
     ov_r /= dbu
+    vd_vs = self.vd_vs
     bg_ov = metal_ov
     n = n_i
     channel_length = l_i / dbu
@@ -335,7 +337,6 @@ class Transistor_V2(pya.PCellDeclarationHelper):
     gate_region.move(-pya.Box(0, 0, channel_width_per_f, gate_height + 2 * gm_ov).center()) # Centre the gate
     self.cell.shapes(gm).insert(gate_region, rotation)
     
-
     # Back gate layer
     vbg_cover = pya.Region(pya.Box(
         gate_region.bbox().left - (bg_ov + 2 * channel_length + finger_width),
@@ -350,7 +351,7 @@ class Transistor_V2(pya.PCellDeclarationHelper):
     # Drive transistors
     if load == False:
         # Back gate connection
-        VBG_Ele_out = pya.Region(pya.Box(posx - finger_width, VDD_T_E, posx, posy)) # Vbg electrode
+        VBG_Ele_out = pya.Region(pya.Box(posx + gate_region.bbox().top, VDD_T_E, posx + gate_region.bbox().top - finger_width, posy)) # Vbg electrode
         self.cell.shapes(bm).insert(VBG_Ele_out)
         if level != 0:
             # If the lower via selected
@@ -359,7 +360,7 @@ class Transistor_V2(pya.PCellDeclarationHelper):
                     gate_region.bbox().left,
                     gate_region.bbox().top,
                     gate_region.bbox().left + via_size,
-                    gate_region.bbox().top-via_size
+                    gate_region.bbox().top - via_size
                     )).round_corners(via_size, via_size, nr)
                 self.cell.shapes(gc).insert(PV_Region, rotation)
                 self.cell.shapes(gm).insert(PV_Region, rotation)
@@ -479,25 +480,25 @@ class Transistor_V2(pya.PCellDeclarationHelper):
         
     # Define variables
     right_edge = posx + source_drain_region.bbox().top + finger_width # Right edge of Cell
-    vdd_box = pya.Box(Left_Edge - ov_l, VDD_B_E, right_edge + ov_r, VDD_T_E) # VDD rail box
-    vss_box = pya.Box(Left_Edge - ov_l, VSS_B_E, right_edge + ov_r, VSS_T_E) # VSS rail box
+    if vd_vs is True:
+        vdd_box = pya.Box(Left_Edge - ov_l, VDD_B_E, right_edge + ov_r, VDD_T_E) # VDD rail box
+        vss_box = pya.Box(Left_Edge - ov_l, VSS_B_E, right_edge + ov_r, VSS_T_E) # VSS rail box
+        
+        # Create Regions and insert into layout
+        vdd_ele = pya.Region(vdd_box) # Create VDD rail region
+        vss_ele = pya.Region(vss_box) # Create VSS rail region
+        v_ele = vdd_ele + vss_ele # Add regions together to create combined voltage regions
+        self.cell.shapes(sd).insert(v_ele) # Insert into cell shape in layout
     
-    # Create Regions and insert into layout
-    vdd_ele = pya.Region(vdd_box) # Create VDD rail region
-    vss_ele = pya.Region(vss_box) # Create VSS rail region
-    v_ele = vdd_ele + vss_ele # Add regions together to create combined voltage regions
-    self.cell.shapes(sd).insert(v_ele) # Insert into cell shape in layout
-    
+        VBG_Ele = pya.Region(pya.Box(Left_Edge - ov_l, VDD_T_E, right_edge + ov_r, VDD_T_E - finger_width)) # Vgb rail
+        self.cell.shapes(bm).insert(VBG_Ele)
 
-    VBG_Ele = pya.Region(pya.Box(Left_Edge - ov_l, VDD_T_E, right_edge + ov_r, VDD_T_E - finger_width)) # Vgb rail
-    self.cell.shapes(bm).insert(VBG_Ele)
-
-    VDDTregion = pya.TextGenerator.default_generator().text\
-        ("VDD", 0.001, 2*self.via).move(posx - gate_region.bbox().top, VDD_B_E)
-    VSSTregion = pya.TextGenerator.default_generator().text\
-        ("VSS", 0.001, 2*self.via).move(posx - gate_region.bbox().top, VSS_B_E)
-    Tregion = VDDTregion + VSSTregion
-    self.cell.shapes(sd).insert(Tregion)
+        VDDTregion = pya.TextGenerator.default_generator().text\
+            ("VDD", 0.001, 2*self.via).move(posx - gate_region.bbox().top, VDD_B_E)
+        VSSTregion = pya.TextGenerator.default_generator().text\
+            ("VSS", 0.001, 2*self.via).move(posx - gate_region.bbox().top, VSS_B_E)
+        Tregion = VDDTregion + VSSTregion
+        self.cell.shapes(sd).insert(Tregion)
     
     # Connection
     # Source to Gate
